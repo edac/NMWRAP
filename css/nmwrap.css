@@ -1,0 +1,217 @@
+html,
+body,
+#viewDiv {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+
+}
+
+i.icon {
+    display: inline-block;
+    /* chrome-fix */
+}
+
+.nmdhsembutton {
+
+    min-width: 305px;
+}
+
+.yrvalue {
+    min-height: 27px;
+}
+
+.yrgeom {
+    min-height: 25px
+}
+
+.riskblurbstyle {
+    border-top: 1px solid #d3d3d3;
+    min-height: 330px;
+    width: 315px;
+}
+
+.mb0 {
+    cursor: default;
+    font-family: "Avenir Next W00", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.btn {
+    font-family: "Avenir Next W00", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin: 3px;
+}
+
+.wyrcenterfont {
+    font-family: "Avenir Next W00", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    text-align: center;
+}
+
+.wyrfont {
+    font-family: "Avenir Next W00", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+}
+
+.ReferenceLayers {
+    background-color: #dfb78a
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #dfb78a;
+    ;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #dfb78a;
+    ;
+    cursor: pointer;
+}
+
+
+.rad,
+
+.ckb {
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+.rad>input,
+.ckb>input {
+    visibility: hidden;
+    position: absolute;
+}
+
+.rad>i,
+.ckb>i {
+    display: inline-block;
+    vertical-align: middle;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    transition: 0.2s;
+    box-shadow: inset 0 0 0 8px #fff;
+    border: 1px solid rgb(113, 113, 113);
+    background: gray;
+}
+
+.ckb>i {
+    width: 25px;
+    border-radius: 3px;
+}
+
+.rad:hover>i {
+    box-shadow: inset 0 0 0 3px #fff;
+    background: gray;
+}
+
+.rad>input:checked+i {
+    box-shadow: inset 0 0 0 3px #fff;
+    background: #dfb78a;
+}
+
+.ckb>input+i:after {
+    content: "";
+    display: block;
+    height: 12px;
+    width: 12px;
+    margin: 2px;
+    border-radius: inherit;
+    transition: inherit;
+    background: gray;
+}
+
+.ckb>input:checked+i:after {
+    margin-left: 11px;
+    background: orange;
+}
+
+.riskpanel {}
+
+#yourrisk {
+    position: fixed;
+    left: 0;
+}
+
+#layers {
+    position: fixed;
+    left: 0;
+}
+
+.yourriskStyle {
+    height: 500px;
+    width: 315px;
+}
+
+.layersStyle {
+    height: 500px;
+    width: 315px;
+}
+
+.header1 {
+    position: relative;
+    left: 0;
+    top: 0;
+    height: 50px;
+    width: 100%;
+    text-align: left;
+    background-color: rgb(113, 113, 113);
+    color: white;
+}
+
+.header2 {
+    position: relative;
+    left: 0;
+    top: 0;
+    height: 50px;
+    width: 100%;
+    background-color: burlywood;
+    color: white;
+}
+
+#searchwidge {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
+
+#applicationDiv {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.footer {
+    background-color: #dfb78a;
+    color: black;
+    text-align: right;
+}
