@@ -461,10 +461,10 @@
             $(".infopop").mouseover(function (val) {
                 console.log(val.target.id)
                 if (val.target.id == "info13") {
-                    console.log("yep")
+
                     opt = {
                         container: 'body',
-                        template: '<div class="popover" role="tooltip"><div class="arrow"></div><div><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAS5JREFUOI3t1DFI1HEUB/BPecc/FEIOA1Ew5WYxhwpp01EEBVMQRIdwdtBZaHAIaiukBCs3N5EjRBBR0kUIBwfFUSwcfg166G/wdBBHL0/FQfqOD96H997wUm45qf/g3YBJkrTGGBdvDWyJ8fsSjfh7Y7Ark3kuhOoOeueYuDGYDWGki7IvvHFNsL+V8ZdUJTgm3YBmmuo5KuAXB+tJ8vl3jGM4+Rc4/TNJ/qRj/PCOuic8gtek8njL9hyfxPjxqhOKMS7M0/aQlfc8rkQBw4S1TKZPCBulrHyR/VrKK7DM3gtqGinLhbBTpOdy8CnZcqpG2Zphop2hV2QH6PnGVMngMwbX2VylE7s5JvN8raDXdcBZVjHm/HxwuEQ32vEApyWB+HFJPVek5758m1JyBvhjU2QDn0PAAAAAAElFTkSuQmCC" alt="">Fire Stations</div></div>',
+                        template: '<div class="popover" role="tooltip"><div class="arrow"></div><div><img src="images/firestations.png" alt="">Fire Stations</div></div>',
                         title: 'Fire Stations',
                         placement: 'right'
                     }
@@ -474,7 +474,7 @@
                 else if (val.target.id == "info14") {
                     opt = {
                         container: 'body',
-                        template: '<div class="popover" role="tooltip"><div class="arrow"></div><div><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAATlJREFUOI3t1D9LAmEcwPHv3T1yBdEQIZGDBNJBQQkNQdDQ0KpBUOrY0BAOrTUHvYCgt2ANQYNg6K64hIvQgWNLYQ5B/uHu0QaLrLzuCRoK+sKzPPB8+A3P8wh+OPEPvnXJaLQV3jW0QBwIAXUgb3aDJ8VUsfEtcDUTmWm2yaFhDWzPAisd/T69fG7Fytt2SQ28wGw6ZOEdNtik25NZK2Mt2kn71hdccsI7wJwH9trEmMYhsOcLCgIx10frJzeUQBcjBFJFnKKAzjrdL0GQdaUBofERGwoKjLyLXPPlNK6GbX8CxwP2acOJpOnfPa/aovd0pAQWNnmcPzNjI3RyQHDImZbATJUTtRslEKCaqF5HM9EFQ28dyJ6MGzANPAjIozvH5a2a7TW659OrJCt3wP7LUu4v/za/BXwGd05UmEw4xM4AAAAASUVORK5CYII=" alt="">Low<br><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAARFJREFUOI3t06FLQ1EUx/HveT64WIeIuGRRWNBuM1jfBMG5RYNBFlY1C/4Bgv/C0yAYBpPnH2Aza7cI8wWLHnh6DI4Ft7d7Jzb9xcO9H34nnJhfTvwPDmNXzKLsA3XEVTHtAxnvnEqLfCrQUpZQ1wNd+RoowDKwzgxtu3CJNPQ2CLRLHIXrDrHRzIF2LWVNmjz6GxbsgdbKVhqkYhFHwIEfFBLMwwECW2GgUfVzACzYDZFs8jEZhH4gmH/HysAM2PBpBtfj5qNgzBkFbZi4+psYx0GgbPNi55UEyXvA/Jg/rwgtaXAf1hCQ3fzOUlYtcoeC1oFF4NkgE+FEdngoq156etLkCbQDdMreTAX+NH8Q/ATyrUoYOOqAlQAAAABJRU5ErkJggg==" alt="">Medium<br><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAQFJREFUOI3t06FKQ1EYwPHfvQwO1iHivBaLgkG7zRfYzEaDQRZWNQs+gOCTDCZ7AZtZ+4YI8woWd8quxRnc5r2KTf/xcL4f5wun5per/YMfDVhKOUZLCJkYR+hPuFwn/xY4ZCMJoSfGLRAjbGIvpT0MoZnFeFMJfCaMQ+gWU2y25STG7pDdjEEpOOaoiHF70Urv1RPOcFIKFjRLsGkHlUBkFcHVgjRhUgaOKoL5Z2wumNAv2C/TEq7nnc+AE65S2sXXq49xXgnMeHmo15vyvIeVOTOvCYcN7iqB0Mjz2yE7aQinYmwVrOEJfVw0uF/09IVfL+NRjB10Ft35FvjT/iD4BsG+R21fmcPsAAAAAElFTkSuQmCC" alt="">High</div></div>',
+                        template: '<div class="popover" role="tooltip"><div class="arrow"></div><div><img src="images/CARlow.png" alt="">Low<br><img src="images/CARmedium.png" alt="">Medium<br><img src="images/CARhigh.png" alt="">High</div></div>',
 
                         title: 'Communites at Risk',
                         placement: 'right'
@@ -485,7 +485,7 @@
                 } else if (val.target.id == "info15") {
                     opt = {
                         container: 'body',
-                        template: '<div class="popover" role="tooltip"><div class="arrow"></div><div><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAEZJREFUOI1jYaAyYKGZgTk5Of8pNWzKlCmMKC7MdjEm27Cpe84yMDDQ0sujBo4aOGrgqIE4DYQVQeSAKVOmMKIYCBOgFAAAAcYM6ZPFvEkAAAAASUVORK5CYII=" alt="">Incorporated City Boundaries</div></div>',
+                        template: '<div class="popover" role="tooltip"><div class="arrow"></div><div><img src="images/CityBoundaries.png" alt="">Incorporated City Boundaries</div></div>',
                         title: 'Incorporated City Boundaries',
                         placement: 'right'
                     }
@@ -495,7 +495,7 @@
                 } else if (val.target.id == "info16") {
                     opt = {
                         container: 'body',
-                        template: '<div class="popover" role="tooltip"><div class="arrow"></div><div><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAGtJREFUOI1jYaAyYKGZgeYrGP5TatjJCAZGFnQBZL75Cob/6GLoAKYG5iCcXibFMGQxrAaSaxhWAykxDMNASg3DMJBSwzAMpNQwog0k1jCiDCQ2XIkycDRhE6VmiCVsYspEXGpgFrGgC1AKAN+XXVFpq2+PAAAAAElFTkSuQmCC" alt="">Vegetation Treatments</div></div>',
+                        template: '<div class="popover" role="tooltip"><div class="arrow"></div><div><img src="images/veg.png" alt="">Vegetation Treatments</div></div>',
                         title: 'Vegetation Treatments',
                         placement: 'right'
                     }
@@ -505,7 +505,7 @@
                 } else if (val.target.id == "info17") {
                     opt = {
                         container: 'body',
-                        template: '<div class="popover" role="tooltip"><div class="arrow"></div><div><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAADlJREFUOI1jYaAyYKGdgfn//1Ns2kRGRhZ0AbINgzqIhl4eNXDUwFEDRw3EaSAlZSK06GNBF6AUAAAD3wnk+pgDRgAAAABJRU5ErkJggg==" alt="">Watersheds HUC8</div></div>',
+                        template: '<div class="popover" role="tooltip"><div class="arrow"></div><div><img src="images/watersheds.png" alt="">Watersheds HUC8</div></div>',
                         title: 'Watersheds HUC8',
                         placement: 'right'
                     }
@@ -515,7 +515,7 @@
                 } else if (val.target.id == "info18") {
                     opt = {
                         container: 'body',
-                        template: '<div class="popover" role="tooltip"><div class="arrow"></div><div><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAH1JREFUOI3llFEKACEIREfwjnNGT9l+RFDrZgsZLKx/mbxGJ1QAMLOChCApmgUDqjDt6FGhu5/ltD8sXg9zDa73IpISkj10GNnQ8krlm3AKPwNs3Z1TuDu/5sGPTEkHprvsTMkKB9xdZ2cVPu23WX5WqyTFzEr0qVe7sBMkF9KbRx0vLAjhAAAAAElFTkSuQmCC" alt="">County</div></div>',
+                        template: '<div class="popover" role="tooltip"><div class="arrow"></div><div><img src="images/county.png" alt="">County</div></div>',
                         title: 'County',
                         placement: 'right'
                     }
