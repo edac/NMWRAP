@@ -216,7 +216,7 @@ require([
     //   });
     var printing = false
     var reporting = false
-    var topbuttonlist = ["#PrintBtn", "#ReportButton", "#MeasureButton"]
+    var topbuttonlist = ["#PrintBtn", "#ReportButton", "#MeasureButton","#InfoBtn"]
     $("#PrintBtn").click(function () {
         toptoolbar("#PrintBtn")
     })
@@ -226,6 +226,9 @@ require([
     })
     $("#ReportButton").click(function () {
         toptoolbar("#ReportButton")
+    })
+    $("#InfoBtn").click(function () {
+        toptoolbar("#InfoBtn")
     })
     $("#GenReport").click(function () {
         console.log(reporturl)
@@ -469,7 +472,7 @@ require([
     }
 
     function toptoolbar(buttonclicked) {
-
+        console.log(buttonclicked)
         clearTheseButtons = topbuttonlist.filter(function (bc) {
             return bc != buttonclicked;
         });
