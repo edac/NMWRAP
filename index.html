@@ -15,10 +15,11 @@
          /_/                                                      
  -->
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ"
         crossorigin="anonymous"></script>
-
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js" integrity="sha384-CchuzHs077vGtfhGYl9Qtc7Vx64rXBXdIAZIPbItbNyWIRTdG0oYAqki3Ry13Yzu" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.2/jspdf.plugin.autotable.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
         crossorigin="anonymous">
@@ -28,14 +29,21 @@
     <script src="https://js.arcgis.com/4.6/"></script>
     <script src="js/nmwrap.js"></script>
     <link rel="stylesheet" href="css/nmwrap.css">
-
+    <link rel="stylesheet" href="css/animation.css">
+    <link rel="stylesheet" href="css/fontello.css">
+    <link rel="stylesheet" href="css/fontello-codes.css">
+    <link rel="stylesheet" href="css/fontello-embedded.css">
+    <link rel="stylesheet" href="css/fontello-ie7.css">
+    <link rel="stylesheet" href="css/fontello-ie7-codes.css">
+   
 </head>
 
 <body>
+
+    
     <div id="applicationDiv">
         <div class="header1 wyrfont" style>
-            <img src="images/ziafire.png"
-                alt="zia" height="50" width="50" /> NMWRAP
+            <img src="images/ziafire.png" alt="zia" height="50" width="50" /> NMWRAP
         </div>
         <div class="header2" class="esri-widget">
             <button type="button" class="btn btn-secondary">
@@ -48,6 +56,31 @@
             </div>
         </div>
         <div id="viewDiv">
+            <div id="topbar">
+                <!-- <button class="action-button esri-icon-blank-map-pin" id="pointButton" type="button"
+                          title="Draw point"></button>
+                        <button class="action-button esri-icon-handle-horizontal" id="multipointButton" type="button"
+                          title="Draw multipoint"></button> -->
+                <button class="action-buttonx demo-icon icon-ruler" id="MeasureButton" type="button" title="Draw polyline"></button>
+                <button class="action-buttonx esri-icon-chart" id="ReportButton" type="button" title="Draw polygon"></button>
+                <button class="action-buttonx esri-icon-printer" id="PrintBtn" type="button" title="Print"></button>
+            </div>
+
+
+
+            <div id="reportbox" style="display: none">
+                    <div class="card bg-light mb-3" style="max-width: 18rem;">
+                            <!-- <div class="card-header">Generate Report</div> -->
+                            <div class="card-body reportboxbody">
+                              
+                              <p class="card-text">Report Options Go Here!</p>
+                              <button class="action-generate" id="GenReport" type="button" title="Generate Report" disabled>Generate Report</button>
+                            </div>
+                          </div>
+                </div>
+
+
+            
             <div id="yourrisk" class="collapse show" aria-expanded="true">
                 <div class="card rounded-bottom bg-light mb-3 yourriskStyle riskpanel ">
                     <h5 class="card-header wyrcenterfont"> WHAT'S YOUR RISK?</h5>
@@ -66,8 +99,7 @@
                                 <span class="col-1" style="padding-right: 0px; padding-left: 0px;">
 
                                     <img tabindex="0" id="info1" class="infopop" data-toggle="popover" title="What is your risk?" data-content="What’s Your Risk is derived from the Fire Intensity Scale. Fire Intensity Scale identifies areas of significant fire behavior potential influenced by fuel hazards, high to extreme weather conditions, and topography.The information is summarized for your review by using a quarter-mile buffer because risk from wildfire is dependent on the conditions of the surrounding location, not the conditions at the specific site.Fire Intensity Scale does not incorporate historical occurrence information. It only evaluates the potential fire behavior for an area, regardless if any fires have occurred there in the past."
-                                        src="images/infoicon.svg"
-                                        height="16" width="16"> </img>
+                                        src="images/infoicon.svg" height="16" width="16"> </img>
 
                                 </span>
                             </span>
@@ -104,29 +136,25 @@
                                     <input class="LayerSwitcher" value="9" type="radio" checked="" name="optradio" />
                                     <i class="wyrfont"></i> Wildfire Potential
                                     <img tabindex="0" id="info2" class="infopop" data-toggle="popover" title="Wildfire Potential" data-content="2014 Wildfire Hazard Potential. Dillon, Gregory K. 2015. Wildfire Hazard Potential (WHP) for the conterminous United States (270-m GRID), version 2014 classified. Fort Collins, CO: Forest Service Research Data Archive. https://doi.org/10.2737/RDS-2015-0046"
-                                        src="images/infoicon.svg"
-                                        height="16" width="16"> </img>
+                                        src="images/infoicon.svg" height="16" width="16"> </img>
                                 </label>
                                 <label class="rad">
                                     <input class="LayerSwitcher" value="8" type="radio" name="optradio" />
                                     <i></i> Where People Live
                                     <img tabindex="0" id="info3" class="infopop" data-toggle="popover" title="Where People Live" data-content="LandScan 2012 Global Population Database. The LandScan 2012 Global Population Database was developed by Oak Ridge National Laboratory (ORNL) for the United States Department of Defense (DoD)."
-                                        src="images/infoicon.svg"
-                                        height="16" width="16"> </img>
+                                        src="images/infoicon.svg" height="16" width="16"> </img>
                                 </label>
                                 <label class="rad">
                                     <input class="LayerSwitcher" value="7" type="radio" name="optradio" />
                                     <i></i> Wildland Urban Interface (WUI)
                                     <img tabindex="0" id="info4" class="infopop" data-toggle="popover" title="Wildland Urban Interface (WUI)" data-content=" The Wildland-Urban Interface (WUI) is the area where houses meet or intermingle with undeveloped wildland vegetation. This makes the WUI a focal area for human-environment conflicts such as wildland fires, habitat fragmentation, invasive species, and biodiversity decline. Using geographic information systems (GIS), we integrated U.S. Census and USGS National Land Cover Data, to map the Federal Register definition of WUI (Federal Register 66:751, 2001). These data are useful within a GIS for mapping and analysis at national, state, and local levels."
-                                        src="images/infoicon.svg"
-                                        height="16" width="16"> </img>
+                                        src="images/infoicon.svg" height="16" width="16"> </img>
                                 </label>
                                 <label class="rad">
                                     <input class="LayerSwitcher" value="6" type="radio" name="optradio" />
                                     <i></i> At-Risk Watersheds
                                     <img tabindex="0" id="info5" class="infopop" data-toggle="popover" title="At-Risk Watersheds" data-content=" Nature Conservancy At-Risk Watersheds"
-                                        src="images/infoicon.svg"
-                                        height="16" width="16"> </img>
+                                        src="images/infoicon.svg" height="16" width="16"> </img>
                                 </label>
                             </div>
                         </div>
@@ -206,8 +234,7 @@
                                 <label class="ckb">
                                     <input type="checkbox" class="ReferenceLayers" name="reference" value="0">
                                     <i></i> Fire Stations
-                                    <img tabindex="0" id="info13" class="infopop" data-toggle="popover" src="images/infoicon.svg"
-                                        height="16" width="16"> </img>
+                                    <img tabindex="0" id="info13" class="infopop" data-toggle="popover" src="images/infoicon.svg" height="16" width="16"> </img>
 
 
                                 </label>
@@ -215,36 +242,31 @@
                                 <label class="ckb">
                                     <input type="checkbox" class="ReferenceLayers" name="reference" value="1">
                                     <i></i> Communites at Risk
-                                    <img tabindex="0" id="info14" class="infopop" data-toggle="popover" src="images/infoicon.svg"
-                                        height="16" width="16"> </img>
+                                    <img tabindex="0" id="info14" class="infopop" data-toggle="popover" src="images/infoicon.svg" height="16" width="16"> </img>
                                 </label>
                                 <br>
                                 <label class="ckb">
                                     <input type="checkbox" class="ReferenceLayers" name="reference" value="2">
                                     <i></i> Incorporated City Boundaries
-                                    <img tabindex="0" id="info15" class="infopop" data-toggle="popover" src="images/infoicon.svg"
-                                        height="16" width="16"> </img>
+                                    <img tabindex="0" id="info15" class="infopop" data-toggle="popover" src="images/infoicon.svg" height="16" width="16"> </img>
                                 </label>
                                 <br>
                                 <label class="ckb">
                                     <input type="checkbox" class="ReferenceLayers" name="reference" value="3">
                                     <i></i> Vegetation Treatments
-                                    <img tabindex="0" id="info16" class="infopop" data-toggle="popover" src="images/infoicon.svg"
-                                        height="16" width="16"> </img>
+                                    <img tabindex="0" id="info16" class="infopop" data-toggle="popover" src="images/infoicon.svg" height="16" width="16"> </img>
                                 </label>
                                 <br>
                                 <label class="ckb">
                                     <input type="checkbox" class="ReferenceLayers" name="reference" value="4">
                                     <i></i> Watersheds HUC8
-                                    <img tabindex="0" id="info17" class="infopop" data-toggle="popover" src="images/infoicon.svg"
-                                        height="16" width="16"> </img>
+                                    <img tabindex="0" id="info17" class="infopop" data-toggle="popover" src="images/infoicon.svg" height="16" width="16"> </img>
                                 </label>
                                 <br>
                                 <label class="ckb">
                                     <input type="checkbox" checked="" class="ReferenceLayers" name="reference" value="5">
                                     <i></i> County
-                                    <img tabindex="0" id="info18" class="infopop" data-toggle="popover" src="images/infoicon.svg"
-                                        height="16" width="16"> </img>
+                                    <img tabindex="0" id="info18" class="infopop" data-toggle="popover" src="images/infoicon.svg" height="16" width="16"> </img>
                                 </label>
 
                             </div>
@@ -345,6 +367,8 @@
             </div>
         </div>
     </div>
+
+
 </body>
 
 

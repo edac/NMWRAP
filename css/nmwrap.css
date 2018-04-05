@@ -215,3 +215,99 @@ i.icon {
     color: black;
     text-align: right;
 }
+
+#topbar {
+    /* background: #fff; */
+    background-color: transparent;
+    position: absolute;
+    top: 125px;
+    right: 55px;
+    padding: 0px;
+  }
+
+  .action-buttonx {
+    font-size: 16px;
+    background-color: #fff;
+    border: 1px solid #D3D3D3;
+    color: #6e6e6e;
+    height: 32px;
+    width: 32px;
+    text-align: center;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+  }
+
+  .action-buttonx:hover,
+  .action-buttonx:focus {
+    background: #eeee;
+    color: #6e6e6e;
+    outline:0;
+  }
+
+  .action-buttonx.active {
+    background: #dfb78a;
+    color: #e4e4e4;
+  }
+
+  .esri-print__export-button {
+
+    background-color: burlywood ;
+    color: #000000;
+
+}
+
+.esri-print__export-button:hover {
+
+    background-color: rgb(73, 48, 14) ;
+    color: #ffff;
+
+}
+
+#reportbox {
+    border-radius: 0 !important;
+    /* background: #fff; */
+    /* background-color: transparent; */
+    font-family: "Avenir Next W00", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    position: absolute;
+    top: 182px;
+    right: 14px;
+    padding: 0px;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+  }
+
+  .reportboxbody {
+
+    min-width: 286px !important;
+    min-height: 477px;
+}
+
+.action-generate {
+    font-size: 16px;
+    background-color: burlywood;
+    border: 1px solid #D3D3D3;
+    color: #000000;
+    height: 32px;
+    width: 246px;
+    text-align: center;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+  }
+  .action-generate:disabled:hover {
+    background: #dddddd !important;
+    color: #fff;
+    cursor: not-allowed;
+}
+.action-generate:disabled {
+    background: #dddddd !important;
+    color: #fff;
+}
+  .action-generate:hover{
+    background: rgb(73, 48, 14);;
+    color: #ffff;
+    outline:0;
+    cursor: pointer;
+  }
+
+  .action-generate.active {
+    background: #dfb78a;
+    color: #e4e4e4;
+  }
+
