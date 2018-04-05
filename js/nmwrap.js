@@ -143,8 +143,6 @@ require([
         var index = -1;
         var val = parseInt(this.value)
         var filteredObj = sublayerObject.find(function (item, i) {
-            console.log(item.id)
-            console.log(val)
             if (item.id === val) {
                 index = i;
                 sublayerObject[i].visible = true
@@ -164,19 +162,14 @@ require([
 
     $(".BaseLayerSwitcher").click(function () {
         activeBaselayer = this.value
-        console.log(activeBaselayer)
-        console.log(map)
         map.basemap = this.value
 
     });
 
     $(".ReferenceLayers").change(function () {
-
-        console.log(this.value)
         ischecked = this.checked
         var val = parseInt(this.value)
         var filteredObj = ReflayerObject.find(function (item, i) {
-            //console.log(item)
             if (item.id === val) {
                 if (ischecked) {
                     ReflayerObject[i].visible = true
@@ -185,7 +178,6 @@ require([
                 }
 
             }
-           // console.log(ReflayerObject)
             RefLyr.sublayers = ReflayerObject
         });
 
@@ -224,16 +216,13 @@ require([
     });
 
 
-    // view.when(function() {
+
     var print = new Print({
         view: view,
-        // specify your own print service
         printServiceUrl: "https://edacarc.unm.edu/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task"
     });
 
-    // Add widget to the top right corner of the view
-    // view.ui.add(print, "top-right");
-    //   });
+
     var printing = false
     var reporting = false
     var clickEnabled = "risk"
@@ -253,7 +242,6 @@ require([
 
     })
     $("#GenReport").click(function () {
-        console.log(reporturl)
         county = ""
         FireStationBlurb = ""
         FireStationMargin = 0
@@ -268,17 +256,9 @@ require([
             url: reporturl,
 
             success: function (data) {
-                console.log(data)
-
-                console.log(ordereddata)
                 jdata = JSON.parse(data);
-                //get values to make report
-                // console.log(jdata.results)
                 jdata.results.forEach(function (element) {
-                    console.log(element.layerId);
                     ordereddata[element.layerId.toString()].push(element)
-
-                    // ordereddata.element.layerId.toString();
                 });
                 if (ordereddata["0"].length > 0) {
                     if (ordereddata["0"].length == 1) {
@@ -349,22 +329,15 @@ require([
 
                         } else {
                             HasVegTable = true
-                            console.log(HasVegTable)
                             BuildTable(ordereddata["3"])
                             VegetationTreatmentsMargin = 10 * ordereddata["3"].length
                             VegetationTreatments = "There are " + ordereddata["3"].length + " vegetation treatments on record in your area of interest."
                             VegKeyArray = []
                             for (key in ordereddata["3"]["0"].attributes) {
-                                //   console.log(key)
                                 VegKeyArray.push(key)
                             }
-                            // console.log(VegKeyArray)
                             ordereddata["3"].forEach(function (treat) {
-
-
                                 VegetationTreatments = ""
-                                //VegetationTreatments + " The " + treat.attributes["Name of Treatment"] + " treatment in " + treat.attributes["Year (Calendar)"] + "."
-
                             })
 
 
@@ -376,13 +349,6 @@ require([
                 } else {
                     VegetationTreatments = "There are no vegetation treatments on record for the area of intrest you have chosen."
                 }
-
-                // console.log(VegetationTreatments)
-                // console.log(CommunitesatRiskBlurb)
-                // console.log(FireStationBlurb)
-                // for (var item in jdata.results){
-                //     console.log(item.layerId)
-                // }
                 county = jdata.results[1].value
                 console.log(ReportTableJSON)
                 aBlurb = VegetationTreatments + CommunitesatRiskBlurb + FireStationBlurb
@@ -456,26 +422,21 @@ require([
     function BuildTable(orderedobj) {
         Lid = orderedobj[0].layerId
         TmpArray = []
-        // console.log(orderedobj)
         excludelist = ["OBJECTID", "Shape", "Shape_Length", "Shape_Area", "Land Owner", "Partners in accomplishing work", "Agency", "Acre (US)", "Project_Type"]
         for (key in orderedobj["0"].attributes) {
-            //   console.log(key)
             if (isInArray(key, excludelist)) {
 
             } else {
                 TmpArray.push(key)
             }
         }
-        //console.log(VegKeyArray)
         ReportTableJSON[Lid] = {}
         ReportTableJSON[Lid].col = TmpArray
-        // console.log(ReportTableJSON)
         rows = []
         orderedobj.forEach(function (treat) {
             innerRow = []
             ReportTableJSON[Lid].col.forEach(function (name) {
                 innerRow.push(treat.attributes[name])
-                // console.log(name)
             })
             rows.push(innerRow)
         })
@@ -485,10 +446,8 @@ require([
 
     function goodchoice(isgood) {
         if (isgood == true) {
-            //  console.log(isgood)
             document.getElementById("GenReport").disabled = false;
         } else if (isgood == false) {
-            //  console.log(isgood)
             document.getElementById("GenReport").disabled = true;
         }
     }
@@ -599,15 +558,11 @@ require([
                     document.getElementById("wf4").style.border = "3px solid LightGray";
                 } else if (response.results["0"].feature.attributes.CLASS_DESC == "5: Very High") {
                     $('#wf5').tooltip('show')
-                    // document.getElementById("wf5").style["padding-top"] = "10px";
-                    // $('#wf5').style('border:3px solid white;')
-                    //document.getElementById("#wf5").style.border="3px solid white";
                     document.getElementById("wf5").style.border = "3px solid LightGray";
 
                 }
             } else if (activelayer == "8") {
                 cleartooltips();
-                //  $('.wfvalue').text(response.results["0"].feature.attributes["Class value"]);
                 var popval = "#pop" + response.results["0"].feature.attributes["Class value"]
                 $(popval).tooltip('show')
             } else if (activelayer == "7") {
@@ -615,17 +570,14 @@ require([
                 if (response.results.length > 0) {
                     var wuival = "#wui" + response.results["0"].feature.attributes.WUIFLAG10
                     $(wuival).tooltip('show')
-                    // $('.wfvalue').text(response.results["0"].feature.attributes.WUIFLAG10);
                 } else {
                     $('#wui0').tooltip('show')
-                    // $('.wfvalue').text("0");
                 }
             } else if (activelayer == "6") {
                 cleartooltips();
                 arwvalue = Math.ceil(parseFloat(response.results["0"].feature.attributes.Group_v1)).toString()
                 var arwval = "#arw" + arwvalue
                 $(arwval).tooltip('show')
-                //  $('.wfvalue').text(arwvalue);
             }
         })
     }
@@ -675,13 +627,8 @@ require([
 
             //console.log(params.mapExtent)
             identifyTask.execute(params).then(function (response) {
-                console.log(response.results.length)
-                console.log(response)
-
-                //console.log("a")
                 if (response.results.length == 0) {
                     goodchoice(false)
-                    console.log('zero')
                     $('.yrinstruct').text("Click inside the NM boundary to see risk");
                     $('.yrgeom').text("")
                     $('.yrvalue').text("");
@@ -691,7 +638,6 @@ require([
                     document.getElementById("riskstatus").style["background-color"] = "#f8f9fa";
                 } else if (response.results["0"].feature.attributes["Pixel Value"] == "0") {
                     goodchoice(false)
-                    console.log('px zero')
                     $('.yrinstruct').text("Click inside the NM boundary to see risk");
                     $('.yrgeom').text("");
                     $('.yrvalue').text("");
@@ -704,7 +650,6 @@ require([
                     // console.log("wut")
                     $('.yrinstruct').text("Click on the map to see your risk");
                     pixelvalue = response.results["0"].feature.attributes["Pixel Value"]
-                    console.log(pixelvalue)
                     var bgcolor;
                     var textcolor;
                     var riskstring
@@ -752,7 +697,6 @@ require([
                             blurb = "Minimal Risk: An area with minimal wildfire risk is Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident."
                             riskstring = "Minimal Wildfire Risk"
                     }
-                    // console.log('aaaad')
                     document.getElementById("riskstatus").style["border-top"] = "1px solid";
                     document.getElementById("riskstatus").style["border-bottom"] = "1px solid";
                     document.getElementById("riskstatus").style["background-color"] = bgcolor;
@@ -762,36 +706,22 @@ require([
                     $('.yrgeom').text(clicklat.toString() + "\u00B0 N " + clicklon.toString() + "\u00B0")//.text(params.geometry.latitude.toString() + "  " + params.geometry.longitude.toString())
                     $('.riskblurb').text(blurb);
                     var buffer = geometryEngine.geodesicBuffer(point, .25, "miles");
-                    // console.log(buffer)
                     newrings = []
                     buffer.rings[0].forEach(function (element, index) {
-                        // console.log(element)
                         if (index % 2 == 0) {
-                            // if (isEven(index)) {
                             latlon = []
                             latlon.push(element[0].toFixed(2))
                             latlon.push(element[1].toFixed(2))
                             newrings.push(latlon);
                         }
-                        //    console.log(element[0].toFixed(2))
-                        //    console.log(element[1].toFixed(2))
-
                     });
                     apigeometry = { "rings": [newrings] }
-                    // lul=geometryEngine.simplify(apigeometry)
-                    // console.log("VVVV")
-                    //  console.log(lul)
                     reporturl = 'https://edacarc.unm.edu/arcgis/rest/services/NMWRAP/NMWRAP/MapServer/identify?geometry='
                     reporturl = reporturl + JSON.stringify(apigeometry) + '&geometryType=esriGeometryPolygon&sr=102100&layerDefs=&time=&layerTimeOptions=&tolerance=0&mapExtent=-12282336.546622703,3646597.8836240033,-11498398.384530144,4491685.668344687&imageDisplay=1855,856,96&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&dynamicLayers=&returnZ=false&returnM=false&gdbVersion=&f=pjson&layers=all'
-                    // console.log(JSON.stringify(apigeometry))
-                    // console.log(reporturl)
-                    // console.log(buffer)
-                    // console.log(JSON.stringify(buffer.rings[0]))//Add new graphic to the bufffer layer
                     buffLayer.add(new Graphic({
                         geometry: buffer,
                         symbol: polyBuff
                     }));
-                    //Add the new graphic to the point layer
                     pointLayer.add(new Graphic({
                         geometry: buffer,
                         symbol: pointBuff
@@ -816,7 +746,6 @@ $(document).ready(function () {
 
     $('.yrinstruct').text("Click on the map to see your risk");
     $("#riskbutton").click(function () {
-        // $("#yourrisk").collapse('hide');
         $("#layers").collapse('hide');
         return false;
     });
