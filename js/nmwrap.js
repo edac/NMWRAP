@@ -324,6 +324,7 @@ require([
 
                         } else {
                             HasVegTable = true
+                            console.log(HasVegTable)
                             BuildTable(ordereddata["3"])
                             VegetationTreatmentsMargin = 10 * ordereddata["3"].length
                             VegetationTreatments = "There are " + ordereddata["3"].length + " vegetation treatments on record in your area of interest."
@@ -336,7 +337,8 @@ require([
                             ordereddata["3"].forEach(function (treat) {
 
 
-                                VegetationTreatments = VegetationTreatments + " The " + treat.attributes["Name of Treatment"] + " treatment in " + treat.attributes["Year (Calendar)"] + "."
+                                VegetationTreatments = ""
+                                //VegetationTreatments + " The " + treat.attributes["Name of Treatment"] + " treatment in " + treat.attributes["Year (Calendar)"] + "."
 
                             })
 
@@ -398,15 +400,20 @@ require([
                     margintop = margintop + 10
                     doc.text(22, margintop, VegetationTreatmentsSplit)
                     margintop = margintop + VegetationTreatmentsMargin
-                    if (HasVegTable === true) {
-                        var columns = ReportTableJSON[3].col//["ID", "Name", "Country"];
-                        var rows = ReportTableJSON[3].rows
-                        doc.autoTable(columns, rows, {
-                            margin: { top: margintop },
-                            styles: { cellPadding: 0.5, fontSize: 8 }
-                        });
-                    }
+                    
                     console.log(ordereddata)
+                }
+                if (HasVegTable === true) {
+                    margintop = margintop + 20
+                    doc.setFontSize(15)
+                    doc.text(22, margintop, "Vegetation Treatments")
+                    var columns = ReportTableJSON[3].col//["ID", "Name", "Country"];
+                    var rows = ReportTableJSON[3].rows
+                    margintop = margintop + 20
+                    doc.autoTable(columns, rows, {
+                        margin: { top: margintop },
+                        styles: { cellPadding: 0.5, fontSize: 8 }
+                    });
                 }
                 doc.output('save', 'NMWRAP-Report.pdf');
             }
