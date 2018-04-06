@@ -37,6 +37,7 @@ function isInArray(value, array) {
 require([
     "esri/Map",
     "esri/views/MapView",
+    "esri/views/2d/draw/Draw",
     "esri/layers/MapImageLayer",
     "esri/widgets/Legend",
     "esri/tasks/support/IdentifyParameters",
@@ -48,12 +49,13 @@ require([
     "esri/widgets/LayerList",
     "esri/layers/GraphicsLayer",
     "esri/Graphic",
+    "esri/geometry/Polyline",
     "esri/geometry/geometryEngine",
     "esri/widgets/Print",
     "dojo/on",
     "dojo/dom",
     "dojo/domReady!"
-], function (Map, MapView, MapImageLayer, Legend, IdentifyParameters, IdentifyTask, webMercatorUtils, Search, Extent, Fullscreen, LayerList, GraphicsLayer, Graphic, geometryEngine, Print, on, dom) {
+], function (Map, MapView, Draw, MapImageLayer, Legend, IdentifyParameters, IdentifyTask, webMercatorUtils, Search, Extent, Fullscreen, LayerList, GraphicsLayer, Graphic, Polyline, geometryEngine, Print, on, dom) {
     sublayerObject = [{
         id: 6,
         visible: false
@@ -215,7 +217,33 @@ require([
         index: 7
     });
 
+    var draw = new Draw({
+        view: view
+    });
+    console.log(draw)
 
+
+    // function labelAreas(geom, length) {
+    //     console.log("lol")
+    //     console.log(geom.paths[0])
+    //     var graphic = new Graphic({
+    //         geometry: geom.centroid,
+    //         symbol: {
+    //             type: "text",
+    //             color: "white",
+    //             haloColor: "black",
+    //             haloSize: "1px",
+    //             text: length.toFixed(2) + " miles",
+    //             xoffset: 3,
+    //             yoffset: 3,
+    //             font: { // autocast as Font
+    //                 size: 14,
+    //                 family: "sans-serif"
+    //             }
+    //         }
+    //     });
+    //     view.graphics.add(graphic);
+    // }
 
     var print = new Print({
         view: view,
@@ -442,7 +470,7 @@ require([
         })
         ReportTableJSON[Lid].rows = rows
     }
-
+    var action
 
     function goodchoice(isgood) {
         if (isgood == true) {
@@ -473,6 +501,9 @@ require([
                 clickEnabled = "risk"
             } else if (buttonclicked == "#MeasureButton") {
                 clickEnabled = "risk"
+                view.graphics.removeAll();
+                
+                $("#measurebox").hide();
             }
 
             console.log("active so deacivating")
@@ -482,21 +513,32 @@ require([
             if (buttonclicked == "#PrintBtn") {
                 view.ui.add(print, "top-right");
                 clickEnabled = "risk"
+                // view.graphics.removeAll();
+                
             } else {
                 view.ui.remove(print, "top-right");
             }
             if (buttonclicked == "#ReportButton") {
                 $("#reportbox").show();
                 clickEnabled = "risk"
+                view.graphics.removeAll();
             } else {
                 $("#reportbox").hide();
             }
             if (buttonclicked == "#InfoBtn") {
                 clickEnabled = "info"
+                view.graphics.removeAll();
 
             }
             if (buttonclicked == "#MeasureButton") {
+                $("#measurebox").show();
+                action = draw.create("polyline");
                 clickEnabled = "measure"
+            }else{
+                $("#measurebox").hide();
+                view.graphics.removeAll();
+
+                $('#measureresult').text("");
             }
         }
 
@@ -610,6 +652,70 @@ require([
 
 
     view.on("click", function (evt) {
+        console.log(clickEnabled)
+        if (clickEnabled === "measure") {
+
+
+            // create an instance of draw polyline action
+
+
+            // fires when a vertex is added
+            action.on("vertex-add", function (evt) {
+               // console.log("1")
+                measureLine(evt.vertices);
+            });
+
+            // fires when the pointer moves
+            action.on("cursor-update", function (evt) {
+                measureLine(evt.vertices);
+               // console.log("1")
+            });
+
+            // fires when the drawing is completed
+            action.on("draw-complete", function (evt) {
+                measureLine(evt.vertices);
+               // console.log("1")
+               action = draw.create("polyline");
+            });
+
+            // fires when a vertex is removed
+            action.on("vertex-remove", function (evt) {
+                measureLine(evt.vertices);
+              //  console.log("1")
+            });
+
+            function measureLine(vertices) {
+                view.graphics.removeAll();
+               // console.log(vertices)
+
+                var graphic = new Graphic({
+                    geometry: new Polyline({
+                        paths: vertices,
+                        spatialReference: view.spatialReference
+                    }),
+                    symbol: {
+                        type: "simple-line", // autocasts as new SimpleFillSymbol
+                        color: [4, 90, 141],
+                        width: 4,
+                        cap: "round",
+                        join: "round"
+                    }
+                });
+
+                view.graphics.add(graphic);
+
+                // var line = createLine(vertices);
+                var lineLength = geometryEngine.geodesicLength(graphic.geometry, "miles");
+                // labelAreas(graphic.geometry, lineLength)
+                console.log(lineLength.toFixed(2).toString() + " Miles") 
+                $('#measureresult').text(lineLength.toFixed(2).toString() + " Miles");
+                // var graphic = createGraphic(line);
+                // view.graphics.add(graphic);
+            }
+        }
+
+
+
         if (clickEnabled === "risk") {
             var clicklat = evt.mapPoint.latitude.toFixed(2);
             var clicklon = evt.mapPoint.longitude.toFixed(2);

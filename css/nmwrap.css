@@ -261,6 +261,37 @@ i.icon {
     color: #ffff;
 
 }
+.esri-component.esri-print.esri-widget.esri-widget--panel {
+    width: 287px !important;
+}
+
+#measurebox {
+    border-radius: 0 !important;
+    /* background: #fff; */
+    /* background-color: transparent; */
+    font-family: "Avenir Next W00", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    position: absolute;
+    top: 182px;
+    right: 14px;
+    padding: 0px;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+  }
+
+  .measureboxbody {
+
+    min-width: 286px !important;
+    min-height: 100px;
+}
+p#measureresult {
+    /* margin-left: 17px; */
+    text-align: center;
+    margin-top: 3px;
+}
+
+p#measuretext {
+    text-align: center;
+    font-size: 15px;
+}
 
 #reportbox {
     border-radius: 0 !important;
@@ -277,7 +308,7 @@ i.icon {
   .reportboxbody {
 
     min-width: 286px !important;
-    min-height: 477px;
+    min-height: 100px;
 }
 
 .action-generate {
@@ -288,6 +319,7 @@ i.icon {
     height: 32px;
     width: 246px;
     text-align: center;
+    margin-top: 28px;
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
   }
   .action-generate:disabled:hover {

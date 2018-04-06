@@ -65,14 +65,21 @@
                 <button class="action-buttonx esri-icon-printer" id="PrintBtn" type="button" title="Print"></button>
             </div>
 
-
+            <div id="measurebox" style="display: none">
+                    <div class="card bg-light mb-3" style="max-width: 18rem;">
+                            <div class="card-body measureboxbody">
+                                <p class="card-text" id="measuretext">Click map to being measurement.</p> 
+                              <p class="card-text"id="measureresult"></p>
+                            </div>
+                          </div>
+                </div>
 
             <div id="reportbox" style="display: none">
                     <div class="card bg-light mb-3" style="max-width: 18rem;">
                             <!-- <div class="card-header">Generate Report</div> -->
                             <div class="card-body reportboxbody">
                               
-                              <p class="card-text">Report Options Go Here!</p>
+                              <!-- <p class="card-text">Report Options Go Here!</p> -->
                               <button class="action-generate" id="GenReport" type="button" title="Generate Report" disabled>Generate Report</button>
                             </div>
                           </div>
