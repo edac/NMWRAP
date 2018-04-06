@@ -319,7 +319,7 @@ p#measuretext {
     height: 32px;
     width: 246px;
     text-align: center;
-    margin-top: 28px;
+    /* margin-top: 28px; */
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
   }
   .action-generate:disabled:hover {
@@ -343,3 +343,7 @@ p#measuretext {
     color: #e4e4e4;
   }
 
+  p#GenReportText{
+    text-align: center;
+    font-size: 12px;
+}

@@ -223,27 +223,7 @@ require([
     console.log(draw)
 
 
-    // function labelAreas(geom, length) {
-    //     console.log("lol")
-    //     console.log(geom.paths[0])
-    //     var graphic = new Graphic({
-    //         geometry: geom.centroid,
-    //         symbol: {
-    //             type: "text",
-    //             color: "white",
-    //             haloColor: "black",
-    //             haloSize: "1px",
-    //             text: length.toFixed(2) + " miles",
-    //             xoffset: 3,
-    //             yoffset: 3,
-    //             font: { // autocast as Font
-    //                 size: 14,
-    //                 family: "sans-serif"
-    //             }
-    //         }
-    //     });
-    //     view.graphics.add(graphic);
-    // }
+
 
     var print = new Print({
         view: view,
@@ -475,8 +455,13 @@ require([
     function goodchoice(isgood) {
         if (isgood == true) {
             document.getElementById("GenReport").disabled = false;
+        ///    document.getElementById("GenReportText").text = "Click on map to define an area of interest.";
+            $('#GenReportText').text("Create report by clicking the button below.");
         } else if (isgood == false) {
             document.getElementById("GenReport").disabled = true;
+            console.log("wut")
+         //   document.getElementById("GenReportText").text = "Create report by clicking the button below.";
+            $('#GenReportText').text("Click on map to define an area of interest.");
         }
     }
 
@@ -502,7 +487,7 @@ require([
             } else if (buttonclicked == "#MeasureButton") {
                 clickEnabled = "risk"
                 view.graphics.removeAll();
-                
+
                 $("#measurebox").hide();
             }
 
@@ -514,7 +499,7 @@ require([
                 view.ui.add(print, "top-right");
                 clickEnabled = "risk"
                 // view.graphics.removeAll();
-                
+
             } else {
                 view.ui.remove(print, "top-right");
             }
@@ -534,7 +519,7 @@ require([
                 $("#measurebox").show();
                 action = draw.create("polyline");
                 clickEnabled = "measure"
-            }else{
+            } else {
                 $("#measurebox").hide();
                 view.graphics.removeAll();
 
@@ -661,32 +646,32 @@ require([
 
             // fires when a vertex is added
             action.on("vertex-add", function (evt) {
-               // console.log("1")
+
                 measureLine(evt.vertices);
             });
 
             // fires when the pointer moves
             action.on("cursor-update", function (evt) {
                 measureLine(evt.vertices);
-               // console.log("1")
+
             });
 
             // fires when the drawing is completed
             action.on("draw-complete", function (evt) {
                 measureLine(evt.vertices);
-               // console.log("1")
-               action = draw.create("polyline");
+
+                action = draw.create("polyline");
             });
 
             // fires when a vertex is removed
             action.on("vertex-remove", function (evt) {
                 measureLine(evt.vertices);
-              //  console.log("1")
+
             });
 
             function measureLine(vertices) {
                 view.graphics.removeAll();
-               // console.log(vertices)
+
 
                 var graphic = new Graphic({
                     geometry: new Polyline({
@@ -695,7 +680,7 @@ require([
                     }),
                     symbol: {
                         type: "simple-line", // autocasts as new SimpleFillSymbol
-                        color: [4, 90, 141],
+                        color: [68, 68, 68],
                         width: 4,
                         cap: "round",
                         join: "round"
@@ -704,13 +689,10 @@ require([
 
                 view.graphics.add(graphic);
 
-                // var line = createLine(vertices);
                 var lineLength = geometryEngine.geodesicLength(graphic.geometry, "miles");
-                // labelAreas(graphic.geometry, lineLength)
-                console.log(lineLength.toFixed(2).toString() + " Miles") 
+                console.log(lineLength.toFixed(2).toString() + " Miles")
                 $('#measureresult').text(lineLength.toFixed(2).toString() + " Miles");
-                // var graphic = createGraphic(line);
-                // view.graphics.add(graphic);
+
             }
         }
 
