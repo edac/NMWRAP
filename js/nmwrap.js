@@ -50,12 +50,13 @@ require([
     "esri/layers/GraphicsLayer",
     "esri/Graphic",
     "esri/geometry/Polyline",
+    "esri/geometry/Polygon",
     "esri/geometry/geometryEngine",
     "esri/widgets/Print",
     "dojo/on",
     "dojo/dom",
     "dojo/domReady!"
-], function (Map, MapView, Draw, MapImageLayer, Legend, IdentifyParameters, IdentifyTask, webMercatorUtils, Search, Extent, Fullscreen, LayerList, GraphicsLayer, Graphic, Polyline, geometryEngine, Print, on, dom) {
+], function (Map, MapView, Draw, MapImageLayer, Legend, IdentifyParameters, IdentifyTask, webMercatorUtils, Search, Extent, Fullscreen, LayerList, GraphicsLayer, Graphic, Polyline, Polygon, geometryEngine, Print, on, dom) {
     sublayerObject = [{
         id: 6,
         visible: false
@@ -265,6 +266,8 @@ require([
 
             success: function (data) {
                 jdata = JSON.parse(data);
+                console.log("VVVVVVVVVVVVV")
+                console.log(jdata)
                 jdata.results.forEach(function (element) {
                     ordereddata[element.layerId.toString()].push(element)
                 });
@@ -451,16 +454,10 @@ require([
         ReportTableJSON[Lid].rows = rows
     }
     var action
-
     function goodchoice(isgood) {
         if (isgood == true) {
-            document.getElementById("GenReport").disabled = false;
-        ///    document.getElementById("GenReportText").text = "Click on map to define an area of interest.";
             $('#GenReportText').text("Create report by clicking the button below.");
         } else if (isgood == false) {
-            document.getElementById("GenReport").disabled = true;
-            console.log("wut")
-         //   document.getElementById("GenReportText").text = "Create report by clicking the button below.";
             $('#GenReportText').text("Click on map to define an area of interest.");
         }
     }
@@ -498,15 +495,15 @@ require([
             if (buttonclicked == "#PrintBtn") {
                 view.ui.add(print, "top-right");
                 clickEnabled = "risk"
-                // view.graphics.removeAll();
 
             } else {
                 view.ui.remove(print, "top-right");
             }
             if (buttonclicked == "#ReportButton") {
                 $("#reportbox").show();
-                clickEnabled = "risk"
+                clickEnabled = "report"
                 view.graphics.removeAll();
+                action = draw.create("polygon");
             } else {
                 $("#reportbox").hide();
             }
@@ -638,6 +635,51 @@ require([
 
     view.on("click", function (evt) {
         console.log(clickEnabled)
+        if (clickEnabled === "report") {
+
+            action.on("vertex-add", function (evt) {
+                // console.log(evt)
+                MakePoly(evt.vertices);
+            });
+
+            action.on("cursor-update", function (evt) {
+                MakePoly(evt.vertices);
+            });
+
+            action.on("draw-complete", function (evt) {
+                MakePoly(evt.vertices);
+                document.getElementById("GenReport").disabled = false;
+                action = draw.create("polygon");
+            });
+
+            action.on("vertex-remove", function (evt) {
+                MakePoly(evt.vertices);
+            });
+
+            function MakePoly(vertices) {
+                view.graphics.removeAll();
+
+                var graphic = new Graphic({
+                    geometry: new Polygon({
+                        hasZ: true,
+                        rings: vertices,
+                        spatialReference: view.spatialReference
+                    }),
+                    symbol: {
+                        type: "simple-fill",
+                        color: [227, 139, 79, 0.5]
+                    }
+
+                });
+
+                apigeometry = { "rings": [vertices] }
+                console.log(apigeometry)
+                reporturl = 'https://edacarc.unm.edu/arcgis/rest/services/NMWRAP/NMWRAP/MapServer/identify?geometry='
+                reporturl = reporturl + JSON.stringify(apigeometry) + '&geometryType=esriGeometryPolygon&sr=102100&layerDefslayer=&time=&layerTimeOptions=&tolerance=0&mapExtent=-12282336.546622703,3646597.8836240033,-11498398.384530144,4491685.668344687&imageDisplay=1855,856,96&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&dynamicLayers=&returnZ=false&returnM=false&gdbVersion=&f=pjson&layers=all'
+
+                view.graphics.add(graphic);
+            }
+        }
         if (clickEnabled === "measure") {
 
 
@@ -686,6 +728,9 @@ require([
                         join: "round"
                     }
                 });
+
+
+
 
                 view.graphics.add(graphic);
 
@@ -794,18 +839,7 @@ require([
                     $('.yrgeom').text(clicklat.toString() + "\u00B0 N " + clicklon.toString() + "\u00B0")//.text(params.geometry.latitude.toString() + "  " + params.geometry.longitude.toString())
                     $('.riskblurb').text(blurb);
                     var buffer = geometryEngine.geodesicBuffer(point, .25, "miles");
-                    newrings = []
-                    buffer.rings[0].forEach(function (element, index) {
-                        if (index % 2 == 0) {
-                            latlon = []
-                            latlon.push(element[0].toFixed(2))
-                            latlon.push(element[1].toFixed(2))
-                            newrings.push(latlon);
-                        }
-                    });
-                    apigeometry = { "rings": [newrings] }
-                    reporturl = 'https://edacarc.unm.edu/arcgis/rest/services/NMWRAP/NMWRAP/MapServer/identify?geometry='
-                    reporturl = reporturl + JSON.stringify(apigeometry) + '&geometryType=esriGeometryPolygon&sr=102100&layerDefs=&time=&layerTimeOptions=&tolerance=0&mapExtent=-12282336.546622703,3646597.8836240033,-11498398.384530144,4491685.668344687&imageDisplay=1855,856,96&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&dynamicLayers=&returnZ=false&returnM=false&gdbVersion=&f=pjson&layers=all'
+                    
                     buffLayer.add(new Graphic({
                         geometry: buffer,
                         symbol: polyBuff
@@ -843,9 +877,13 @@ $(document).ready(function () {
     });
     $('#yourrisk').on('hidden.bs.collapse', function () {
         $("#layers").collapse('show');
+       
     })
-    $('#layers').on('hidden.bs.collapse', function () {
+    $('#layers').on('hidden.bs.collapse', function (evt) {
+      //This is a hack, because I could not get stopPropagation() to work
+        if (evt.target.childNodes["0"].parentElement.id==="layers"){
         $("#yourrisk").collapse('show');
+        }
     })
 
     $("#collapseOne").on('show.bs.collapse', function () {

@@ -15,11 +15,12 @@
          /_/                                                      
  -->
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ"
         crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js" integrity="sha384-CchuzHs077vGtfhGYl9Qtc7Vx64rXBXdIAZIPbItbNyWIRTdG0oYAqki3Ry13Yzu" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.2/jspdf.plugin.autotable.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js" integrity="sha384-CchuzHs077vGtfhGYl9Qtc7Vx64rXBXdIAZIPbItbNyWIRTdG0oYAqki3Ry13Yzu"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.2/jspdf.plugin.autotable.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
         crossorigin="anonymous">
@@ -35,12 +36,12 @@
     <link rel="stylesheet" href="css/fontello-embedded.css">
     <link rel="stylesheet" href="css/fontello-ie7.css">
     <link rel="stylesheet" href="css/fontello-ie7-codes.css">
-   
+
 </head>
 
 <body>
 
-    
+
     <div id="applicationDiv">
         <div class="header1 wyrfont" style>
             <img src="images/ziafire.png" alt="zia" height="50" width="50" /> NMWRAP
@@ -59,34 +60,34 @@
             <div id="topbar">
                 <!-- <button class="action-button esri-icon-blank-map-pin" id="pointButton" type="button"
                           title="Draw point"></button>-->
-                <button class="action-buttonx esri-icon-description" id="InfoBtn" type="button"title="Info"></button>
+                <button class="action-buttonx esri-icon-description" id="InfoBtn" type="button" title="Info"></button>
                 <button class="action-buttonx esri-icon-polyline" id="MeasureButton" type="button" title="Measure"></button>
                 <button class="action-buttonx esri-icon-chart" id="ReportButton" type="button" title="Generate Report"></button>
                 <button class="action-buttonx esri-icon-printer" id="PrintBtn" type="button" title="Print"></button>
             </div>
 
             <div id="measurebox" style="display: none">
-                    <div class="card bg-light mb-3" style="max-width: 18rem;">
-                            <div class="card-body measureboxbody">
-                                <p class="card-text" id="measuretext">Click map to being measurement.</p> 
-                              <p class="card-text"id="measureresult"></p>
-                            </div>
-                          </div>
+                <div class="card bg-light mb-3" style="max-width: 18rem;">
+                    <div class="card-body measureboxbody">
+                        <p class="card-text" id="measuretext">Click map to being measurement.</p>
+                        <p class="card-text" id="measureresult"></p>
+                    </div>
                 </div>
+            </div>
 
             <div id="reportbox" style="display: none">
-                    <div class="card bg-light mb-3" style="max-width: 18rem;">
-                            <!-- <div class="card-header">Generate Report</div> -->
-                            <div class="card-body reportboxbody">
-                              
-                              <p class="card-text" id="GenReportText">Click on map to define an area of interest.</p>
-                              <button class="action-generate" id="GenReport" type="button" title="Generate Report" disabled>Generate Report</button>
-                            </div>
-                          </div>
+                <div class="card bg-light mb-3" style="max-width: 18rem;">
+                    <!-- <div class="card-header">Generate Report</div> -->
+                    <div class="card-body reportboxbody">
+
+                        <p class="card-text" id="GenReportText">Click on map to define an area of interest.</p>
+                        <button class="action-generate" id="GenReport" type="button" title="Generate Report" disabled>Generate Report</button>
+                    </div>
                 </div>
+            </div>
 
 
-            
+
             <div id="yourrisk" class="collapse show" aria-expanded="true">
                 <div class="card rounded-bottom bg-light mb-3 yourriskStyle riskpanel ">
                     <h5 class="card-header wyrcenterfont"> WHAT'S YOUR RISK?</h5>
@@ -175,7 +176,7 @@
                         </a>
                         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
                             <div class="card-body">
-                                   
+
                                 <label class="rad">
                                     <input class="BaseLayerSwitcher" value="streets" type="radio" checked="" name="optradio2" />
                                     <i></i> Streets
@@ -237,12 +238,12 @@
                         </a>
                         <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
                             <div class="card-body">
-                                    <div class="" "slidecontainer">
-                                            <input type="range" min="1" max="100" value="100" class="slider" id="RefRange">
-                                            <p class="wyrfont">Opacity:
-                                                <span id="demo"></span>%
-                                            </p>
-                                        </div>
+                                <div class="" "slidecontainer">
+                                    <input type="range" min="1" max="100" value="100" class="slider" id="RefRange">
+                                    <p class="wyrfont">Opacity:
+                                        <span id="demo"></span>%
+                                    </p>
+                                </div>
                                 <label class="ckb">
                                     <input type="checkbox" class="ReferenceLayers" name="reference" value="0">
                                     <i></i> Fire Stations
