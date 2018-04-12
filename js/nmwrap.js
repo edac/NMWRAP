@@ -630,7 +630,20 @@ require([
     // / /__/ / / __/  '_/
     // \___/_/_/\__/_/\_\ 
 
+    var measureGeom = {}
+    //var measureUnit=""
+    $("#unitchoice").change(function () {
+        if (jQuery.isEmptyObject(measureGeom) === false) {
+            console.log(measureGeom)
+            //  console.log(measureUnit)
+            unitchoice = $("#unitchoice").val();
+            ll = geometryEngine.geodesicLength(measureGeom, unitchoice);
+            console.log(ll)
+            $('#measureresult').text(ll.toFixed(2).toString() + " " + unitchoice);
+            // $('#measureresult').text('');
 
+        }
+    });
 
 
     view.on("click", function (evt) {
@@ -681,8 +694,8 @@ require([
             }
         }
         if (clickEnabled === "measure") {
-
-
+            unitchoice = $("#unitchoice").val();
+            console.log(unitchoice)
             // create an instance of draw polyline action
 
 
@@ -734,11 +747,17 @@ require([
 
                 view.graphics.add(graphic);
 
-                var lineLength = geometryEngine.geodesicLength(graphic.geometry, "miles");
-                console.log(lineLength.toFixed(2).toString() + " Miles")
-                $('#measureresult').text(lineLength.toFixed(2).toString() + " Miles");
+                lineLength = geometryEngine.geodesicLength(graphic.geometry, unitchoice);
+
+                console.log(typeof graphic.geometry)
+                measureGeom = graphic.geometry
+                measureUnit = unitchoice
+                console.log(typeof unitchoice)
+                console.log(unitchoice)
+                $('#measureresult').text(lineLength.toFixed(2).toString() + " " + unitchoice);
 
             }
+
         }
 
 
@@ -839,7 +858,7 @@ require([
                     $('.yrgeom').text(clicklat.toString() + "\u00B0 N " + clicklon.toString() + "\u00B0")//.text(params.geometry.latitude.toString() + "  " + params.geometry.longitude.toString())
                     $('.riskblurb').text(blurb);
                     var buffer = geometryEngine.geodesicBuffer(point, .25, "miles");
-                    
+
                     buffLayer.add(new Graphic({
                         geometry: buffer,
                         symbol: polyBuff
@@ -877,12 +896,12 @@ $(document).ready(function () {
     });
     $('#yourrisk').on('hidden.bs.collapse', function () {
         $("#layers").collapse('show');
-       
+
     })
     $('#layers').on('hidden.bs.collapse', function (evt) {
-      //This is a hack, because I could not get stopPropagation() to work
-        if (evt.target.childNodes["0"].parentElement.id==="layers"){
-        $("#yourrisk").collapse('show');
+        //This is a hack, because I could not get stopPropagation() to work
+        if (evt.target.childNodes["0"].parentElement.id === "layers") {
+            $("#yourrisk").collapse('show');
         }
     })
 

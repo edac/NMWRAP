@@ -69,7 +69,16 @@
             <div id="measurebox" style="display: none">
                 <div class="card bg-light mb-3" style="max-width: 18rem;">
                     <div class="card-body measureboxbody">
-                        <p class="card-text" id="measuretext">Click map to being measurement.</p>
+
+                        <p class="card-text" id="measuretext">Click to measure in 
+                            <select id="unitchoice">
+                                <option value="meters">meters</option>
+                                <option value="feet">feet</option>
+                                <option value="kilometers">kilometers</option>
+                                <option value="miles">miles</option>
+                                <option value="yards">yards</option>
+                            </select>
+                        </p>
                         <p class="card-text" id="measureresult"></p>
                     </div>
                 </div>
