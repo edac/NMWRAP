@@ -6,6 +6,9 @@
 
 var NMWRAPurl = "https://edacarc.unm.edu/arcgis/rest/services/NMWRAP/NMWRAP/MapServer"
 var activelayer = "9"
+var activereflayers = [5]
+//becuse I listed them backards...
+var activereflayersKey = [5, 4, 3, 2, 1, 0]
 var defaultblurb = "NMWRAP is Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
 WildfireRiskLayers = [6, 7, 8, 9]
 
@@ -53,10 +56,11 @@ require([
     "esri/geometry/Polygon",
     "esri/geometry/geometryEngine",
     "esri/widgets/Print",
+    "dojo/_base/array",
     "dojo/on",
     "dojo/dom",
     "dojo/domReady!"
-], function (Map, MapView, Draw, MapImageLayer, Legend, IdentifyParameters, IdentifyTask, webMercatorUtils, Search, Extent, Fullscreen, LayerList, GraphicsLayer, Graphic, Polyline, Polygon, geometryEngine, Print, on, dom) {
+], function (Map, MapView, Draw, MapImageLayer, Legend, IdentifyParameters, IdentifyTask, webMercatorUtils, Search, Extent, Fullscreen, LayerList, GraphicsLayer, Graphic, Polyline, Polygon, geometryEngine, Print, arrayUtils, on, dom) {
     sublayerObject = [{
         id: 6,
         visible: false
@@ -176,10 +180,17 @@ require([
             if (item.id === val) {
                 if (ischecked) {
                     ReflayerObject[i].visible = true
+                    activereflayers.push(activereflayersKey[i])
                 } else {
                     ReflayerObject[i].visible = false
+                    console.log(i)
+                    console.log(activereflayersKey[i])
+                    const index = activereflayers.indexOf(activereflayersKey[i]);
+                    if (index !== -1) {
+                        activereflayers.splice(index, 1);
+                    }
                 }
-
+                console.log(activereflayers)
             }
             RefLyr.sublayers = ReflayerObject
         });
@@ -635,13 +646,10 @@ require([
     $("#unitchoice").change(function () {
         if (jQuery.isEmptyObject(measureGeom) === false) {
             console.log(measureGeom)
-            //  console.log(measureUnit)
             unitchoice = $("#unitchoice").val();
             ll = geometryEngine.geodesicLength(measureGeom, unitchoice);
             console.log(ll)
             $('#measureresult').text(ll.toFixed(2).toString() + " " + unitchoice);
-            // $('#measureresult').text('');
-
         }
     });
 
@@ -760,7 +768,90 @@ require([
 
         }
 
+        if (clickEnabled === "info") {
+            var clicklat = evt.mapPoint.latitude.toFixed(2);
+            var clicklon = evt.mapPoint.longitude.toFixed(2);
+            var point = view.toMap({
+                x: evt.x,
+                y: evt.y
+            });
+            var activereflayersRev = activereflayers
+            identifyTask = new IdentifyTask(NMWRAPurl);
+            infoparams = new IdentifyParameters();
+            infoparams.tolerance = 5;
+            infoparams.layerIds = activereflayersRev.reverse() //[0, 1, 2, 3, 4, 5];
+            infoparams.layerOption = "top";
+            infoparams.width = view.width;
+            infoparams.height = view.height;
 
+            infoparams.geometry = point
+            infoparams.mapExtent = view.extent;
+            // params.layerIds = [5, 4, 3, 2, 1, 0];
+            console.log(infoparams)
+
+            identifyTask.execute(infoparams).then(function (response) {
+                console.log(response)
+                var results = response.results;
+                console.log(results)
+                return arrayUtils.map(results, function (result) {
+                    console.log(result)
+                    var feature = result.feature;
+
+                    var layerName = result.layerName;
+                    console.log(feature)
+                    feature.attributes.layerName = layerName;
+                    if (layerName === 'County') {
+                        feature.popupTemplate = { // autocasts as new PopupTemplate()
+                            title: " County",
+                            content: "<b>Name: </b> {NAME}"
+                        };
+                    }
+                    else if (layerName === 'Watersheds HUC8') {
+                        feature.popupTemplate = { // autocasts as new PopupTemplate()
+                            title: "{NAME}",
+                            content: "<b>HUC8: </b> {HUC8} <br><b>Number of Communities: </b> {No Communities in Watershed} " +
+                                "<br><b>Rank:</b> {Rank Text}"
+                        };
+                    }
+                    else if (layerName === 'Vegetation Treatments') {
+                        feature.popupTemplate = { // autocasts as new PopupTemplate()
+                            title: layerName + " {OBJECTID}",
+                            content: "<b>Acre (US): </b> {Acre (US)} <br> <b>Agency: </b> {Agency} <br> <b>Land Owner: </b> {Land Owner} <br> <b>Name of Treatment: </b> {Name of Treatment} <br> <b>Object ID: </b> {OBJECTID} <br> <b>Partners: </b> {Partners in accomplishing work} <br> <b>Project Type: </b> {Project_Type} <br> <b>Target Species: </b> {Target Species or Existing Veg} <br> <b>Treatment Description: </b> {Treatment Description} <br> <b>Treatment Type: </b> {Treatment Type} <br> <b>Year (Calendar): </b> {Year (Calendar)}   "
+                        };
+                    }
+                    else if (layerName === 'Incorporated City Boundaries') {
+                        feature.popupTemplate = { // autocasts as new PopupTemplate()
+                            title: "{NAME10}",
+                            content: "<b>Geo ID: </b>{GEOID10}<br><b>Name: </b>{NAME10} <br><b>LSAD Name: </b>{NAMELSAD10} <br><b>Object ID: </b>{OBJECTID} <br>"
+                        };
+                    }
+                    else if (layerName === 'Communites at Risk') {
+                        feature.popupTemplate = { // autocasts as new PopupTemplate()
+                            title: "Communites at Risk",
+                            content: "<b>County: </b>{County} <br><b>Name: </b>{NAME} <br><b>Object ID: </b>{OBJECTID_12} <br><b>Rate for 2016: </b>{Rate_2016} <br><b>Shape</b>{Shape}"
+                        };
+                    }
+                    else if (layerName === 'Fire Stations') {
+                        feature.popupTemplate = { // autocasts as new PopupTemplate()
+                            title: "Fire Stations",
+                            content: "<b>Name: </b>{Name}<br><b>Address: </b>{Address}<br><b>City: </b>{City}<br>"
+                        };
+                    }
+                    return feature;
+                });
+            }).then(showPopup); // Send the array of features to showPopup()
+
+            function showPopup(response) {
+                // console.log("lol")
+                if (response.length > 0) {
+                    view.popup.open({
+                        features: response,
+                        location: evt.mapPoint
+                    });
+                }
+                dom.byId("viewDiv").style.cursor = "auto";
+            }
+        }
 
         if (clickEnabled === "risk") {
             var clicklat = evt.mapPoint.latitude.toFixed(2);
