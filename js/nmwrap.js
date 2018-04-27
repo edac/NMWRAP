@@ -826,9 +826,23 @@ require([
                         };
                     }
                     else if (layerName === 'Communites at Risk') {
+                        rate = feature.attributes.Rate_2016
+                        var rateString;
+                        switch (rate) {
+                            case 'H':
+                                rateString = "High";
+                                break;
+                            case 'M':
+                                rateString = "Medium";
+                                break;
+                            case 'L':
+                                rateString = "Low";
+                                break;
+
+                        }
                         feature.popupTemplate = { // autocasts as new PopupTemplate()
                             title: "Communites at Risk",
-                            content: "<b>County: </b>{County} <br><b>Name: </b>{NAME} <br><b>Object ID: </b>{OBJECTID_12} <br><b>Rate for 2016: </b>{Rate_2016} <br><b>Shape</b>{Shape}"
+                            content: "<b>County: </b>{County} <br><b>Name: </b>{NAME} <br><b>Rate for 2016: </b>"+rateString
                         };
                     }
                     else if (layerName === 'Fire Stations') {
