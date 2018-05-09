@@ -117,20 +117,38 @@ require([
     });
 
     var slider = document.getElementById("myRange");
+    console.log(slider)
     var slider2 = document.getElementById("RefRange");
     var output = document.getElementById("demo");
+    var refrgnpct = document.getElementById("RefRangepct");
     output.innerHTML = slider.value;
-    output.innerHTML = slider2.value;
-    slider.oninput = function () {
+    refrgnpct.innerHTML = slider2.value;
+
+    $('#myRange').on('change',function(){
+        console.log("aa")
         output.innerHTML = this.value;
         var newopacity = this.value / 100
         dangerLyr.opacity = newopacity
-    }
-    slider2.oninput = function () {
-        output.innerHTML = this.value;
+     })
+
+     $('#RefRange').on('change',function(){
+        console.log(this.value)
+        refrgnpct.innerHTML = this.value;
         var newopacity = this.value / 100
         RefLyr.opacity = newopacity
-    }
+     })
+
+    // slider.oninput = function () {
+    //     console.log("aa")
+    //     output.innerHTML = this.value;
+    //     var newopacity = this.value / 100
+    //     dangerLyr.opacity = newopacity
+    // }
+    // slider2.oninput = function () {
+    //     output.innerHTML = this.value;
+    //     var newopacity = this.value / 100
+    //     RefLyr.opacity = newopacity
+    // }
 
     var reporturl = ""
 
@@ -141,6 +159,56 @@ require([
     //  / /__/ _ `/ // / -_) __/\ \| |/|/ / / __/ __/ _ \/ -_) __/
     // /____/\_,_/\_, /\__/_/ /___/|__,__/_/\__/\__/_//_/\__/_/   
     //           /___/                                            
+
+
+
+    //polyfill for garbage IE
+    // https://tc39.github.io/ecma262/#sec-array.prototype.find
+    if (!Array.prototype.find) {
+        Object.defineProperty(Array.prototype, 'find', {
+            value: function (predicate) {
+                // 1. Let O be ? ToObject(this value).
+                if (this == null) {
+                    throw new TypeError('"this" is null or not defined');
+                }
+
+                var o = Object(this);
+
+                // 2. Let len be ? ToLength(? Get(O, "length")).
+                var len = o.length >>> 0;
+
+                // 3. If IsCallable(predicate) is false, throw a TypeError exception.
+                if (typeof predicate !== 'function') {
+                    throw new TypeError('predicate must be a function');
+                }
+
+                // 4. If thisArg was supplied, let T be thisArg; else let T be undefined.
+                var thisArg = arguments[1];
+
+                // 5. Let k be 0.
+                var k = 0;
+
+                // 6. Repeat, while k < len
+                while (k < len) {
+                    // a. Let Pk be ! ToString(k).
+                    // b. Let kValue be ? Get(O, Pk).
+                    // c. Let testResult be ToBoolean(? Call(predicate, T, « kValue, k, O »)).
+                    // d. If testResult is true, return kValue.
+                    var kValue = o[k];
+                    if (predicate.call(thisArg, kValue, k, o)) {
+                        return kValue;
+                    }
+                    // e. Increase k by 1.
+                    k++;
+                }
+
+                // 7. Return undefined.
+                return undefined;
+            },
+            configurable: true,
+            writable: true
+        });
+    }
 
 
 
@@ -842,7 +910,7 @@ require([
                         }
                         feature.popupTemplate = { // autocasts as new PopupTemplate()
                             title: "Communites at Risk",
-                            content: "<b>County: </b>{County} <br><b>Name: </b>{NAME} <br><b>Rate for 2016: </b>"+rateString
+                            content: "<b>County: </b>{County} <br><b>Name: </b>{NAME} <br><b>Rate for 2016: </b>" + rateString
                         };
                     }
                     else if (layerName === 'Fire Stations') {
@@ -985,6 +1053,17 @@ require([
 });
 $(document).ready(function () {
 
+    console.log("VVVV")
+    if (/*@cc_on!@*/false || !!document.documentMode) {
+        // if ($.browser.msie && $.browser.version > 6){
+        $("#myRange").addClass('sliderIEisGarbage');
+        $("#RefRange").addClass('sliderIEisGarbage');
+        
+    } else {
+        $("#myRange").addClass('slider');
+        $("#RefRange").addClass('slider');
+
+    }
 
     function isEven(n) {
         return n % 2 == 0;
