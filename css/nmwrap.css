@@ -346,9 +346,9 @@ p#measuretext {
   }
 
   .reportboxbody {
-
+    text-align: center !important;
     min-width: 286px !important;
-    min-height: 100px;
+    min-height: 160px;
 }
 
 .action-generate {
