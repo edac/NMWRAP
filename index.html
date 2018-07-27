@@ -41,9 +41,146 @@
 <body>
 
 
-    <div id="applicationDiv">
+    <div id="AdminDiv" style="display: none">
+
+
+        <form style="margin: 19%;">
+            <div class="form-group">
+                <label for="newemail">Email address</label>
+                <input type="email" class="form-control" id="newemail" placeholder="Enter Email">
+
+            </div>
+            <div class="form-group">
+                <label for="newname">Users Name</label>
+                <input type="text" class="form-control" id="newname" placeholder="Enter Users Name">
+            </div>
+
+            <!-- <button id="createuserbutton" class="btn btn-primary">Submit</button> -->
+            <a class="button" style="border: solid; border-radius: 11px; padding: 7px;" id="createuserbutton">Create</a>
+        </form>
+    </div>
+
+    <div id="PWResetDiv" style="display: none">
+            Enter password twice
+        <form style="margin: 19%;">
+            <div class="form-group">
+                <label for="txtNewPassword">Password</label>
+                <input type="password" class="form-control" id="txtNewPassword" placeholder="Password">
+            </div>
+            <div class="form-group">
+                <label for="txtConfirmPassword">Password</label>
+                <input type="password" class="form-control" id="txtConfirmPassword" placeholder="Password">
+            </div>
+            <!-- <div class="registrationFormAlert" id="divCheckPasswordMatch"></div> -->
+            <!-- <button id="createuserbutton" class="btn btn-primary">Submit</button> -->
+            <a class="button registrationFormAlert changepassword-diabled"  id="divCheckPasswordMatch" >Create</a>
+        </form>
+    </div>
+    <div id="PWResetFailDiv" style="display: none">
+        Im sorry etc.
+    </div>
+    
+    <div id="applicationDiv" style="display: none">
+
+
         <div class="header1 wyrfont" style>
+            <button id="logoutButton" type="button" class="btn btn-info btn-lg loginbutton" style="display: none">Logout</button>
+            <button id="loginbutt" type="button" class="btn btn-info btn-lg loginbutton" data-toggle="modal" data-target="#myModal">Login</button>
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                        </div>
+                        <div class="modal-body" style="color:black">
+
+
+                            <div class="form-group">
+                                <label for="FormEmail1">Email address</label>
+                                <input type="email" class="form-control" id="FormEmail" placeholder="email@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="FormPassword">Password</label>
+                                <input type="password" class="form-control" id="FormPassword" placeholder="Password">
+                            </div>
+
+                            <button id="loginbuttona" class="btn btn-primary">Sign in</button>
+                            <div id="pwreset" style="color: rgb(16, 48, 192); cursor:pointer;">Reset Password</div>
+                            <div id="FailedLogin" style="color: red;display:none">Login Failed.</div>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+            <div class="modal fade" id="pwresetModal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                        </div>
+                        <div class="modal-body" style="color:black">
+                            <div class="form-group">
+                                <label for="resetEmail">Email address</label>
+                                <input type="email" class="form-control" id="resetEmail" placeholder="email@example.com">
+                            </div>
+                            <button id="reqreset" class="btn btn-primary">Request Password Reset</button>
+                            <div id="UserDoesNotExist" style="color:red; display: none">User does not exist</div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- <div class="dropdown" id="loginbutt">
+                        <button  style="position: absolute;right: 5px;top: 5px;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Login
+                        </button>
+                        <div class="dropdown-menu" id="ddm">
+                                
+                                  <div class="form-group">
+                                    <label for="FormEmail1">Email address</label>
+                                    <input type="email" class="form-control" id="FormEmail" placeholder="email@example.com">
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="FormPassword">Password</label>
+                                    <input type="password" class="form-control" id="FormPassword" placeholder="Password">
+                                  </div>
+
+                                  <button  id="loginbuttona" class="btn btn-primary">Sign in</button>
+                                
+                                <div  id="FailedLogin" style="color: red;display:none">Login Failed.</div>
+                              </div>
+
+                      </div>
+
+                      <button  style="position: absolute;right: 5px;top: 5px; display:none;" class="btn btn-secondart" type="button" id="logoutButton">
+                            Logout
+                          </button> -->
+
             <img src="images/ziafire.png" alt="zia" height="50" width="50" /> NMWRAP
+
+
+
+
+
         </div>
         <div class="header2" class="esri-widget">
             <button type="button" class="btn btn-secondary">
@@ -59,9 +196,10 @@
             <div id="topbar">
                 <!-- <button class="action-button esri-icon-blank-map-pin" id="pointButton" type="button"
                           title="Draw point"></button>-->
+                <button class="action-buttonx esri-icon-chart" id="ReportButton" style="display: none" type="button" title="Generate Report"></button>
                 <button class="action-buttonx esri-icon-description" id="InfoBtn" type="button" title="Info"></button>
                 <button class="action-buttonx esri-icon-polyline" id="MeasureButton" type="button" title="Measure"></button>
-                <button class="action-buttonx esri-icon-chart" id="ReportButton" type="button" title="Generate Report"></button>
+
                 <button class="action-buttonx esri-icon-printer" id="PrintBtn" type="button" title="Print"></button>
             </div>
 
@@ -90,7 +228,7 @@
 
                         <p class="card-text" id="GenReportText">Click on map to define an area of interest.</p>
                         Title
-                        <input type="text" id="reportname" placeholder="Title of file" >
+                        <input type="text" id="reportname" placeholder="Title of file">
                         <br>
                         <br>
                         <button class="action-generate" id="GenReport" type="button" title="Generate Report" disabled>Generate Report</button>

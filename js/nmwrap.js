@@ -11,7 +11,7 @@ var activereflayers = [5]
 var activereflayersKey = [5, 4, 3, 2, 1, 0]
 var defaultblurb = "NMWRAP is Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
 WildfireRiskLayers = [6, 7, 8, 9]
-
+var canChangePass = false
 //Define the symbol(look) of the polygon part of the buffer
 var polyBuff = {
     type: "simple-fill", outline: {
@@ -310,7 +310,7 @@ require([
         printServiceUrl: "https://edacarc.unm.edu/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task"
     });
 
-
+    var LoggedIn = false
     var printing = false
     var reporting = false
     var clickEnabled = "risk"
@@ -330,9 +330,9 @@ require([
 
     })
     $("#GenReport").click(function () {
-        $( "#pdfspinner" ).show();
-       // $( "#pdfdl" ).hide();
-       
+        $("#pdfspinner").show();
+        // $( "#pdfdl" ).hide();
+
         county = ""
         FireStationBlurb = ""
         FireStationMargin = 0
@@ -341,35 +341,36 @@ require([
         VegetationTreatments = ""
         ReportTableJSON = {}
         VegetationTreatmentsMargin = 0
+
         HasVegTable = false
         ordereddata = { "0": [], "1": [], "2": [], "3": [], "4": [], "5": [], "6": [], "7": [], "8": [], "9": [], "10": [], "11": [] }
-        var pdfdlname = $( "#reportname" ).val();
-        if (pdfdlname===""){
-            pdfdlname="NMWRAP-Report.pdf"
+        var pdfdlname = $("#reportname").val();
+        if (pdfdlname === "") {
+            pdfdlname = "NMWRAP-Report.pdf"
         }
-        if (pdfdlname.slice((pdfdlname.lastIndexOf(".") - 1 >>> 0) + 2)!="pdf"){
-            pdfdlname=pdfdlname+".pdf"
+        if (pdfdlname.slice((pdfdlname.lastIndexOf(".") - 1 >>> 0) + 2) != "pdf") {
+            pdfdlname = pdfdlname + ".pdf"
         }
 
-        pdfbasename=pdfdlname.slice(0, -4)
+        pdfbasename = pdfdlname.slice(0, -4)
 
 
         apigeometry.title = pdfbasename;
-console.log(JSON.stringify(apigeometry))
+        console.log(JSON.stringify(apigeometry))
 
         $.ajax({
             method: "POST",
             url: "/postgeom",
             data: JSON.stringify(apigeometry),
-          })
-            .done(function( msg ) {
-              console.log(msg);
-              $( "#pdfspinner" ).hide();
-    
-             pdfdownloadurl="/getreport/"+msg+"/"+pdfdlname
- 
-             pdfdlstr='<div><a href="'+pdfdownloadurl+'"<span class="esri-icon-download"></span><span>'+pdfdlname+'</span></a></div>'
-             $( ".pdfdl" ).append(pdfdlstr)
+        })
+            .done(function (msg) {
+                console.log(msg);
+                $("#pdfspinner").hide();
+
+                pdfdownloadurl = "/getreport/" + msg + "/" + pdfdlname
+
+                pdfdlstr = '<div><a href="' + pdfdownloadurl + '"<span class="esri-icon-download"></span><span>' + pdfdlname + '</span></a></div>'
+                $(".pdfdl").append(pdfdlstr)
 
             });
 
@@ -456,6 +457,9 @@ console.log(JSON.stringify(apigeometry))
             }
             if (buttonclicked == "#InfoBtn") {
                 clickEnabled = "info"
+                console.log("cursor")
+                $("#viewDiv").css('cursor', 'url(images/infocur.png), auto');
+                // $("#viewDiv").css('cursor', 'crosshair');
                 view.graphics.removeAll();
 
             }
@@ -919,7 +923,109 @@ console.log(JSON.stringify(apigeometry))
     });
 
 });
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};
+
+function checkPasswordMatch() {
+    var password = $("#txtNewPassword").val();
+    var confirmPassword = $("#txtConfirmPassword").val();
+
+    if (password != confirmPassword) {
+        $("#divCheckPasswordMatch").html("Passwords do not match!");
+        $("#divCheckPasswordMatch").addClass("changepassword-diabled");
+        $("#divCheckPasswordMatch").removeClass("changepassword");
+        window.canChangePass=false
+    } else {
+        $("#divCheckPasswordMatch").html("Change Password");
+        $("#divCheckPasswordMatch").addClass("changepassword");
+        $("#divCheckPasswordMatch").removeClass("changepassword-diabled");
+        window.canChangePass=true
+    }
+}
 $(document).ready(function () {
+
+    $("#txtNewPassword, #txtConfirmPassword").keyup(checkPasswordMatch);
+
+    // LoggedIn
+    $.ajax({
+        method: "GET",
+        url: "/loggedin",
+
+    })
+        .done(function (data, status, xhr) {
+            console.log("$$$")
+            console.log(xhr.getResponseHeader('Set-Cookie'));
+            window.LoggedIn = true
+            console.log("loggedint?")
+            console.log(window.LoggedIn)
+            $("#loginbutt").hide();
+
+            $("#ReportButton").show();
+            $("#logoutButton").show();
+            var admin = getUrlParameter('admin');
+            console.log(admin)
+            console.log(window.LoggedIn)
+            if (admin == "true" && window.LoggedIn) { //Need to check for admin!!!
+                console.log(admin)
+                $("#applicationDiv").hide();
+                $("#AdminDiv").show();
+            } else {
+                $("#applicationDiv").show();
+                $("#AdminDiv").hide();
+            }
+        }).fail(function (msg) {
+            // PWResetDiv,PWResetFailDiv
+            var token = getUrlParameter('token');
+            if (token != undefined){
+            if (token.length == 200) {
+                console.log("lol")
+                $("#applicationDiv").hide();
+                $("#AdminDiv").hide();
+                $.ajax({
+                    method: "POST",
+                    url: "/checkreset",
+                    data: token,
+                })
+                    .done(function (msg) {
+                        console.log(msg)
+                        if (msg.trim()=="True"){
+                        $("#PWResetDiv").show();
+                        }else{
+                            console.log(msg)
+                            console.log("True")
+                            $("#PWResetFailDiv").show();
+                           
+                        }
+                    }).fail(function (msg) {
+                        console.log(msg)
+                });
+            }    
+            } else {
+                console.log("##")
+                console.log(msg);
+                $("#applicationDiv").show();
+                $("#AdminDiv").hide();
+                $("#logoutButton").hide();
+                $("#ReportButton").hide();
+                $("#loginbutt").show();
+                window.LoggedIn = false
+            }
+        });
+    console.log(window.LoggedIn)
+
+
 
     console.log("VVVV")
     if (/*@cc_on!@*/false || !!document.documentMode) {
@@ -937,6 +1043,120 @@ $(document).ready(function () {
     function isEven(n) {
         return n % 2 == 0;
     }
+
+    $("#pwreset").click(function () {
+        console.log("test");
+        $('#myModal').modal('hide')
+        $('#pwresetModal').modal('show')
+
+    });
+
+
+    $("#divCheckPasswordMatch").click(function () {
+        if (canChangePass==true){
+        var password=$("#txtConfirmPassword").val();
+        var usertoken = getUrlParameter('token');
+        passpack = { "token": usertoken,"password":password}
+        console.log(JSON.stringify(passpack))
+
+        $.ajax({
+            method: "POST",
+            url: "/changepassword",
+            data: JSON.stringify(passpack),
+        })
+            .done(function (msg) {
+                console.log(msg)
+
+            }).fail(function (msg) {
+                console.log(msg)
+            });
+
+
+        }
+
+    });
+
+    $("#reqreset").click(function () {
+        //resetEmail
+        console.log($("#resetEmail").val());
+        $.ajax({
+            method: "POST",
+            url: "/resetpassword",
+            data: $("#resetEmail").val(),
+        })
+            .done(function (msg) {
+                console.log(msg)
+                $('#myModal').modal('hide')
+                $('#pwresetModal').modal('hide')
+            }).fail(function (msg) {
+                console.log(msg)
+                $('#UserDoesNotExist').show()
+            });
+        console.log($("Done").val());
+    })
+
+
+
+    $("#createuserbutton").click(function () {
+        console.log($("#newname").val());
+        console.log($("#newemail").val());
+        userpack = { "email": $("#newemail").val(), "name": $("#newname").val() }
+        $.ajax({
+            method: "POST",
+            url: "/createuser",
+            data: JSON.stringify(userpack),
+        })
+            .done(function (msg) {
+                console.log(msg)
+
+            }).fail(function (msg) {
+                console.log(msg)
+            });
+    });
+    $("#loginbuttona").click(function () {
+        authpack = { "email": $("#FormEmail").val(), "password": $("#FormPassword").val() }
+        console.log(authpack);
+        console.log($("#FormPassword").val());
+        $.ajax({
+            method: "POST",
+            url: "/login",
+            data: JSON.stringify(authpack),
+        })
+            .done(function (msg) {
+                console.log(msg);
+                $('#myModal').modal('hide')
+                $("#ReportButton").show();
+                $("#loginbutt").hide();
+                $("#logoutButton").show();
+                $("#FailedLogin").hide();
+                //modify css stuff when logged in...
+
+            }).fail(function (msg) {
+                console.log(msg);
+                $("#ddm").addClass("show");
+                $("#FailedLogin").show();
+                window.LoggedIn = false
+            });
+
+    });
+
+    $("#logoutButton").click(function () {
+
+        $.ajax({
+            method: "Get",
+            url: "/logout",
+
+        })
+            .done(function (msg) {
+                console.log(msg);
+                $("#ReportButton").hide();
+                $("#loginbutt").show();
+                $("#logoutButton").hide();
+                //modify css stuff when logged in...
+
+            });
+
+    });
 
     $('.yrinstruct').text("Click on the map to see your risk");
     $("#riskbutton").click(function () {
