@@ -1066,7 +1066,7 @@ $(document).ready(function () {
         })
             .done(function (msg) {
                 console.log(msg)
-
+                window.location.href = "https://nmwrap.org"
             }).fail(function (msg) {
                 console.log(msg)
             });
