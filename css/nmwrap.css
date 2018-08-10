@@ -26,6 +26,47 @@ i.icon {
     border-color: blue;
 
 }
+.radleft{
+    float: left;
+    
+}
+.esri-select-custom{
+    width: 70%;
+}
+.radinline{
+    display: -webkit-box;
+
+}
+.historyitem{
+cursor:pointer;
+margin-top: 5px;
+padding: 0px;
+}
+
+.mylistgroup {
+max-height: 125px;
+overflow: auto;
+    /* padding: 0px; */
+
+}
+.deletehist {
+    border: 1px solid rgb(217, 205, 205);
+    margin-right: 2px;
+    background: #e8e8e8;
+    width: 20px;
+    height: 20px;
+    float: right;
+    font-weight: bold;
+    font-size: 9pt;
+    padding: 0px;
+    margin-top: 2px;
+    cursor: pointer;
+    }
+
+    .deletehist:hover {
+        background: rgb(182, 87, 87);
+      }
+
 .changepassword-diabled{
 
     border: solid;
@@ -36,6 +77,32 @@ i.icon {
     border-color:lightgrey ;
     cursor: not-allowed;
 }
+
+.custom-file-input::-webkit-file-upload-button {
+    visibility: hidden;
+  }
+  .custom-file-input::before {
+    content: 'Select Shapefile zip';
+    display: inline-block;
+    background: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
+    border: 1px solid #999;
+    border-radius: 3px;
+    padding: 5px 8px;
+    outline: none;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    cursor: pointer;
+    text-shadow: 1px 1px #fff;
+    font-weight: 700;
+    font-size: 10pt;
+  }
+  .custom-file-input:hover::before {
+    border-color: black;
+  }
+  .custom-file-input:active::before {
+    background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+  }
+
 .loginbutton{
     float: right;
     width: 98px;

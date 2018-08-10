@@ -61,7 +61,7 @@
     </div>
 
     <div id="PWResetDiv" style="display: none">
-            Enter password twice
+        Enter password twice
         <form style="margin: 19%;">
             <div class="form-group">
                 <label for="txtNewPassword">Password</label>
@@ -73,13 +73,13 @@
             </div>
             <!-- <div class="registrationFormAlert" id="divCheckPasswordMatch"></div> -->
             <!-- <button id="createuserbutton" class="btn btn-primary">Submit</button> -->
-            <a class="button registrationFormAlert changepassword-diabled"  id="divCheckPasswordMatch" >Create</a>
+            <a class="button registrationFormAlert changepassword-diabled" id="divCheckPasswordMatch">Create</a>
         </form>
     </div>
     <div id="PWResetFailDiv" style="display: none">
         Im sorry etc.
     </div>
-    
+
     <div id="applicationDiv" style="display: none">
 
 
@@ -137,6 +137,7 @@
                                 <label for="resetEmail">Email address</label>
                                 <input type="email" class="form-control" id="resetEmail" placeholder="email@example.com">
                             </div>
+                            <i id="pwrspinner" class="fa fa-spinner fa-spin" style="font-size:px; display:none"></i>
                             <button id="reqreset" class="btn btn-primary">Request Password Reset</button>
                             <div id="UserDoesNotExist" style="color:red; display: none">User does not exist</div>
                         </div>
@@ -183,8 +184,8 @@
 
         </div>
         <div class="header2" class="esri-widget">
-            <button type="button" class="btn btn-secondary">
-                <span class="fas fa-home"></span> Home</button>
+            <!-- <button type="button" class="btn btn-secondary">
+                <span class="fas fa-home"></span> Home</button> -->
             <button id="riskbutton" type="button" class="btn btn-secondary">
                 <span class="fab fa-gripfire"></span> Your Risk</button>
             <button id="layersbutton" type="button" class="btn btn-secondary">
@@ -225,14 +226,64 @@
                 <div class="card bg-light mb-3" style="max-width: 18rem;">
                     <!-- <div class="card-header">Generate Report</div> -->
                     <div class="card-body reportboxbody">
+                        <label class="rad radleft">
+                            <input type="radio" class="ReportRadio" id="draw" checked="draw" value="draw">
+                            <i class="wyrfont"></i> Draw a polygon
+                            <img tabindex="0" id="infodrawpl" class="infopop" data-toggle="popover" title="Draw a polygon" data-content="This option allow a user to create a polygon on the map to create an area of interest. "
+                                src="images/infoicon.svg" height="16" width="16">
+                        </label>
+                        <br>
+                        <label class="rad radleft">
+                            <input type="radio" class="ReportRadio" id="upload" value="upload">
+                            <i class="wyrfont"></i> Upload a shapefile
+                            <img tabindex="0" id="infoupload" class="infopop" data-toggle="popover" title="Upload a shapefile" data-content="This option allows a user to upload a shapefile with a single polygon feature with geometry that will be used as an area of interest."
+                                src="images/infoicon.svg" height="16" width="16">
+                        </label>
+                        <br>
+                        <label class="rad radleft">
+                                <input type="radio" class="ReportRadio" id="history" value="history">
+                            <i class="wyrfont"></i> Choose from your history
+                            <img tabindex="0" id="infohistory" class="infopop" data-toggle="popover" title="Your Previous History" data-content="You can re-use your previous areas of interest"
+                                src="images/infoicon.svg" height="16" width="16">
+                        </label>
+                        <br>
+                        <label class="rad radleft">
+                                <input type="radio" class="ReportRadio" id="choose" value="choose">
+                            <i class="wyrfont"></i> Choose 
+                            <select id="choosechoice">
+                                    <option value="counties">Counties</option>
+                                    <option value="cityboundaries">City Boundaries</option>
 
-                        <p class="card-text" id="GenReportText">Click on map to define an area of interest.</p>
-                        Title
-                        <input type="text" id="reportname" placeholder="Title of file">
+                                </select>
+                            <img tabindex="0" id="infochoose" class="infopop" data-toggle="popover" title="Choose a county" data-content="You can click anywhere on the map to define an area of interest."
+                                src="images/infoicon.svg" height="16" width="16">
+                        </label>
+                        <br>
+                        <br>
+                        <br>
+                        <!-- <input type="radio" class="ReportRadio" id="draw" checked="draw" value="draw">Draw -->
+                        <!-- <br><input type="radio" class="ReportRadio" id="upload" value="upload">Upload
+                        <br><input type="radio" class="ReportRadio" id="history" value="history">History
+                        <br><input type="radio" class="ReportRadio" id="choose" value="choose">Choose -->
+                        <div style="height:50px">
+                            <div>
+                                <input accept=".zip" name="shape" id="shape" type="file" style="display: none" />
+                            </div>
+                        </div>
+                        <!-- <p class="card-text" id="GenReportText">Click on map to define an area of interest.</p> -->
+                        <span id="titlebox">
+                            Title
+                            <input type="text" id="reportname" placeholder="Title of file">
+                        </span>
+
+                        <!-- <i id="historyspinner" class="fa fa-spinner fa-spin" style="font-size:24px; display:none"></i> -->
                         <br>
                         <br>
                         <button class="action-generate" id="GenReport" type="button" title="Generate Report" disabled>Generate Report</button>
                         <!-- <div style="display:none">Download</div> -->
+                        <div class="list-group mylistgroup" id="histlist">
+
+                            </div>
                         <i id="pdfspinner" class="fa fa-spinner fa-spin" style="font-size:24px; display:none"></i>
                         <br>
                         <br>
@@ -416,8 +467,6 @@
                                     <input type="checkbox" class="ReferenceLayers" name="reference" value="0">
                                     <i></i> Fire Stations
                                     <img tabindex="0" id="info13" class="infopop" data-toggle="popover" src="images/infoicon.svg" height="16" width="16">
-
-
                                 </label>
                                 <br>
                                 <label class="ckb">
@@ -458,7 +507,7 @@
         </div>
         <div class="footer">
             <div class="row Legend3">
-                <div class="col-2">Wildfire Potential</div>
+                <div class="col-3">Wildfire Potential</div>
                 <div id="wf-1" data-toggle="tooltip" data-delay=0 data-trigger='manual' data-animation=false data-placement="top" title="Non-burnable"
                     class="col-1 ttborder wf" style="border: 3px solid black; border-radius: 7px;  margin:2px; background: lightgray;">
                 </div>

@@ -3,7 +3,8 @@
 //  | | / /__ _____(_)__ _/ /  / /__ ___
 //  | |/ / _ `/ __/ / _ `/ _ \/ / -_|_-<
 //  |___/\_,_/_/ /_/\_,_/_.__/_/\__/___/
-
+var apigeometry = {}
+var activereflayersRev = [5]
 var NMWRAPurl = "https://edacarc.unm.edu/arcgis/rest/services/NMWRAP/NMWRAP/MapServer"
 var activelayer = "9"
 var activereflayers = [5]
@@ -37,6 +38,27 @@ function isInArray(value, array) {
     return array.indexOf(value) > -1;
 }
 
+UserHistory = {}
+function FetchHistory() {
+    $.ajax({
+        method: "GET",
+        url: "/history",
+
+    })
+        .done(function (msg) {
+            UserHistory = msg
+            // $("#histlist").empty()
+            // jQuery.each(window.UserHistory, function (val) {
+            //     hisstr = '<a   data-id="' + this.id + '" class="historyitem list-group-item list-group-item-action">' + this.title + '<button value="' + this.id + '" class="deletehist"><span>X</span></button></a>'
+            //     $("#histlist").append(hisstr)
+            // });
+
+        }).fail(function (msg) {
+            UserHistory = {}
+        });
+
+}
+
 require([
     "esri/Map",
     "esri/views/MapView",
@@ -61,44 +83,48 @@ require([
     "dojo/dom",
     "dojo/domReady!"
 ], function (Map, MapView, Draw, MapImageLayer, Legend, IdentifyParameters, IdentifyTask, webMercatorUtils, Search, Extent, Fullscreen, LayerList, GraphicsLayer, Graphic, Polyline, Polygon, geometryEngine, Print, arrayUtils, on, dom) {
+
+
+
+
     sublayerObject = [{
-        id: 6,
+        id: 6, //At-Risk Watersheds
         visible: false
     }, {
-        id: 7,
+        id: 7, //Wildland Urban Interface (WUI)
         visible: false
     }, {
-        id: 8,
+        id: 8, //Where People Live
         visible: false
     }, {
-        id: 9,
+        id: 9, //Wildfire Potential
         visible: true
     }, {
-        id: 10,
+        id: 10, //Land Fire 2014
         visible: false
     }, {
-        id: 11,
+        id: 11, // nm_whip_majority.img
         visible: false
     }]
 
 
     ReflayerObject = [{
-        id: 5,
+        id: 5, //county
         visible: true
     }, {
-        id: 4,
+        id: 4, //Watersheds HUC8
         visible: false
     }, {
-        id: 3,
+        id: 3, //Vegetation Treatments
         visible: false
     }, {
-        id: 2,
+        id: 2, //Incorporated City Boundaries
         visible: false
     }, {
-        id: 1,
+        id: 1, //Communites at Risk
         visible: false
     }, {
-        id: 0,
+        id: 0, //Fire Stations
         visible: false
     }]
 
@@ -117,7 +143,7 @@ require([
     });
 
     var slider = document.getElementById("myRange");
-    console.log(slider)
+    //console.log(slider)
     var slider2 = document.getElementById("RefRange");
     var output = document.getElementById("demo");
     var refrgnpct = document.getElementById("RefRangepct");
@@ -125,14 +151,14 @@ require([
     refrgnpct.innerHTML = slider2.value;
 
     $('#myRange').on('change', function () {
-        console.log("aa")
+        //  console.log("aa")
         output.innerHTML = this.value;
         var newopacity = this.value / 100
         dangerLyr.opacity = newopacity
     })
 
     $('#RefRange').on('change', function () {
-        console.log(this.value)
+        //  console.log(this.value)
         refrgnpct.innerHTML = this.value;
         var newopacity = this.value / 100
         RefLyr.opacity = newopacity
@@ -152,7 +178,7 @@ require([
 
     var reporturl = ""
 
-    var apigeometry = {}
+
 
     //    __                     ____       _ __      __          
     //   / /  ___ ___ _____ ____/ __/    __(_) /_____/ /  ___ ____
@@ -251,14 +277,14 @@ require([
                     activereflayers.push(activereflayersKey[i])
                 } else {
                     ReflayerObject[i].visible = false
-                    console.log(i)
-                    console.log(activereflayersKey[i])
+                    //  console.log(i)
+                    //  console.log(activereflayersKey[i])
                     const index = activereflayers.indexOf(activereflayersKey[i]);
                     if (index !== -1) {
                         activereflayers.splice(index, 1);
                     }
                 }
-                console.log(activereflayers)
+                //  console.log(activereflayers)
             }
             RefLyr.sublayers = ReflayerObject
         });
@@ -274,8 +300,122 @@ require([
         index: 7
     });
 
+    $("#shape").change(function () {
+        document.getElementById("GenReport").disabled = false
+    });
+    reportType = ""
+    $(".ReportRadio").change(function () {
+        switch ($(this).val()) {
+            case 'draw':
+                $("#viewDiv").css('cursor', 'url(images/polycur.png), auto');
+                document.getElementById("GenReport").disabled = true;
+                $("#reportname").prop('disabled', false);
+                reportType = "draw"
+                // console.log("Draw is enabled...");
+                clickEnabled = "report" //HB
+                view.graphics.removeAll();
+                action = draw.create("polygon");
+                $("#upload").prop('checked', false);
+                $("#history").prop('checked', false);
+                $("#choose").prop('checked', false);
+                $("#shape").fadeOut()
+                $("#shape").wrap('<form>').closest('form').get(0).reset();
+                $("#shape").unwrap();
+                $("#titlebox").fadeIn()
+                $("#histlist").empty()
+                $("#reportname").val("");
+                // $("#historyspinner").hide();
+                break;
+            case 'upload':
+                $("#viewDiv").css('cursor', 'default');
+                reportType = "upload"
+                document.getElementById("GenReport").disabled = true;
+                $("#draw").prop('checked', false);
+                $("#history").prop('checked', false);
+                $("#choose").prop('checked', false);
+                //  console.log("Show upload form and disable draw stuff...");
+                clickEnabled = "risk"
+                $("#shape").fadeIn();
+                $("#titlebox").fadeIn()
+                // $("#historyspinner").hide();
+                view.graphics.removeAll();
+                $("#histlist").empty()
+                $("#reportname").prop('disabled', false);
+                $("#reportname").val("");
+                break;
+            case 'history':
+                $("#viewDiv").css('cursor', 'default');
+                $("#reportname").prop('disabled', true);
+                reportType = "history"
+                document.getElementById("GenReport").disabled = true;
+                $("#draw").prop('checked', false);
+                $("#upload").prop('checked', false);
+                $("#choose").prop('checked', false);
+                //  console.log("Show upload form and disable draw stuff...");
+                clickEnabled = "risk"
+                $("#shape").fadeOut()
+                $("#shape").wrap('<form>').closest('form').get(0).reset();
+                $("#shape").unwrap();
+                $("#titlebox").show()
+                $("#reportname").val("");
+                // $("#historyspinner").show();
+                // $("#shape").fadeIn();
+
+                view.graphics.removeAll();
+                jQuery.each(window.UserHistory, function (val) {
+                    hisstr = '<a   data-id="' + this.id + '" class="historyitem list-group-item list-group-item-action">' + this.title + '<button value="' + this.id + '" class="deletehist"><span>X</span></button></a>'
+                    $("#histlist").append(hisstr)
+                });
+                //               pdfdlstr = '<div><a href="' + pdfdownloadurl + '"<span class="esri-icon-download"></span><span>' + pdfdlname + '</span></a></div>'
+                //                $(".pdfdl").append(pdfdlstr)
+
+                break;
+            case 'choose':
+                $("#viewDiv").css('cursor', 'url(images/polycur.png), auto');
+                reportType = "choose"
+                document.getElementById("GenReport").disabled = true;
+                $("#draw").prop('checked', false);
+                $("#history").prop('checked', false);
+                $("#upload").prop('checked', false);
+                $("#histlist").empty()
+                $("#shape").fadeOut()
+                $("#shape").wrap('<form>').closest('form').get(0).reset();
+                $("#shape").unwrap();
+                clickEnabled = "choose"
+
+                // console.log("Show upload form and disable draw stuff...");
+                // clickEnabled = "risk"
+                // $("#shape").fadeIn();
+                // $("#titlebox").fadeIn()
+                // // $("#historyspinner").hide();
+                // view.graphics.removeAll();
+                // $("#histlist").empty()
+                // $("#reportname").prop('disabled', false);
+                break;
+        }
+    });
 
 
+
+
+    // $(".ReportRadio").change(function () {
+    //     console.log("test")
+    // // ​$(".ReportRadio").change(function() {
+    //     // switch($(this).val()) {
+    //     //     case 'draw' :
+    //     //         alert("Draw is enabled...");
+    //     //         clickEnabled = "report" //HB
+    //     //         view.graphics.removeAll();
+    //     //         action = draw.create("polygon");
+    //     //         break;
+    //     //     case 'upload' :
+    //     //         alert("Show upload form and disable draw stuff...");
+    //     //         clickEnabled = "risk"
+    //     //         view.graphics.removeAll();
+
+    //     //         break;
+    //     // }            
+    // });​
 
 
 
@@ -297,10 +437,121 @@ require([
         index: 7
     });
 
+    // $('.deletehist').on('click', '.historyitem', function (evt) {
+    //     evt.stopPropagation();
+    //     console.log($(this))
+    //     evt.preventDefault();
+    // });
+
+    // '<button value="'+this.id+'" class="deletehist"><span>X</span></button></a>'
+
+    $('#histlist').on('click', '.historyitem', function (evt) {
+        lastchild = evt.target.tagName.toLowerCase()
+        console.log(lastchild)
+        // console.log($(this)["0"].firstElementChild.value)
+        //console.log($(this))
+        //  $("#reportname").prop('disabled', true);
+        if (lastchild == "a") {
+            $(".historyitem").css("background-color", "white");
+            view.graphics.removeAll();
+            $(this).css("background-color", "#dddddd")
+            var histid = $(this).data("id");
+            //console.log(histid)
+            for (var key in window.UserHistory) {
+                item = window.UserHistory[key]
+                if (item['id'] == histid) {
+                    //     console.log(JSON.stringify(item['geom']['rings'][0]))
+                    $("#reportname").val(item['geom']['title']);
+                    // var polygon = {
+                    //     type: "polygon", // autocasts as new Polygon()
+                    //     rings: 
+                    //         item['geom']['rings'][0]
+
+                    // };
+                    // console.log(JSON.stringify(polygon))
+
+                    // var fillSymbol = {
+                    //     type: "simple-fill", // autocasts as new SimpleFillSymbol()
+                    //     color: [227, 139, 79, 0.8],
+                    //     outline: { // autocasts as new SimpleLineSymbol()
+                    //       color: [255, 255, 255],
+                    //       width: 1
+                    //     }
+                    //   };
+
+
+                    var graphic = new Graphic({
+                        geometry: new Polygon({
+                            hasZ: true,
+                            rings: item['geom']['rings'][0],
+                            spatialReference: view.spatialReference
+                        }),
+                        symbol: {
+                            type: "simple-fill",
+                            color: [227, 139, 79, 0.5]
+                        }
+
+                    });
+
+                    //   var polygonGraphic = new Graphic({
+                    //     geometry: polygon,
+                    //     symbol: fillSymbol
+                    //   });
+
+                    view.graphics.add(graphic)
+                    window.apigeometry = item['geom']
+                    window.reportType = "history"
+                    // console.log(window.apigeometry)
+                    // console.log("aa")
+                    document.getElementById("GenReport").disabled = false;
+
+                }
+            }
+
+        }else {
+            console.log(evt.currentTarget.dataset.id)
+            jQuery.each(window.UserHistory, function (val) {
+                //   console.log(this.id)
+                //   console.log(this.title)
+                console.log(val)
+                console.log(this)//df
+                if (this.id==evt.currentTarget.dataset.id){
+                   // window.UserHistory.splice(val, 1)
+                    payload={"id":evt.currentTarget.dataset.id}
+                    $.ajax({
+                        method: "POST",
+                        url: "/deletehistory",
+                        data: JSON.stringify(payload),
+                    }).done(function (msg) {
+                        window.UserHistory.splice(val, 1)
+                        FetchHistory()
+                        $("#histlist").empty()
+                        jQuery.each(window.UserHistory, function (val) {
+                            hisstr = '<a   data-id="' + this.id + '" class="historyitem list-group-item list-group-item-action">' + this.title + '<button value="' + this.id + '" class="deletehist"><span>X</span></button></a>'
+                            $("#histlist").append(hisstr)
+                        });
+                    }).fail(function (msg) {
+                       console.log("failed to delete")
+                       alert(msg)
+                    });
+
+
+
+
+
+
+                }
+               // if //fruits.splice(1, 1);
+                // hisstr = '<a   data-id="' + this.id + '" class="historyitem list-group-item list-group-item-action">' + this.title + '<button value="' + this.id + '" class="deletehist"><span>X</span></button></a>'
+                // $("#histlist").append(hisstr)
+            });
+        }
+    });
+
     var draw = new Draw({
         view: view
     });
-    console.log(draw)
+    // console.log(draw)
 
 
 
@@ -331,19 +582,20 @@ require([
     })
     $("#GenReport").click(function () {
         $("#pdfspinner").show();
+
         // $( "#pdfdl" ).hide();
 
-        county = ""
-        FireStationBlurb = ""
-        FireStationMargin = 0
-        CommunitesatRiskBlurb = ""
-        CommunitesatRiskMargin = 0
-        VegetationTreatments = ""
-        ReportTableJSON = {}
-        VegetationTreatmentsMargin = 0
+        // county = ""
+        // FireStationBlurb = ""
+        // FireStationMargin = 0
+        // CommunitesatRiskBlurb = ""
+        // CommunitesatRiskMargin = 0
+        // VegetationTreatments = ""
+        // ReportTableJSON = {}
+        // VegetationTreatmentsMargin = 0
 
-        HasVegTable = false
-        ordereddata = { "0": [], "1": [], "2": [], "3": [], "4": [], "5": [], "6": [], "7": [], "8": [], "9": [], "10": [], "11": [] }
+        // HasVegTable = false
+        //ordereddata = { "0": [], "1": [], "2": [], "3": [], "4": [], "5": [], "6": [], "7": [], "8": [], "9": [], "10": [], "11": [] }
         var pdfdlname = $("#reportname").val();
         if (pdfdlname === "") {
             pdfdlname = "NMWRAP-Report.pdf"
@@ -354,26 +606,107 @@ require([
 
         pdfbasename = pdfdlname.slice(0, -4)
 
+        if (reportType == "draw") {
+            apigeometry.title = pdfbasename;
 
-        apigeometry.title = pdfbasename;
-        console.log(JSON.stringify(apigeometry))
+            //   console.log(JSON.stringify(apigeometry))
 
-        $.ajax({
-            method: "POST",
-            url: "/postgeom",
-            data: JSON.stringify(apigeometry),
-        })
-            .done(function (msg) {
-                console.log(msg);
+            $.ajax({
+                method: "POST",
+                url: "/postgeom",
+                data: JSON.stringify(apigeometry),
+            })
+                .done(function (msg) {
+                    console.log(msg);
+                    $("#pdfspinner").hide();
+
+                    pdfdownloadurl = "/getreport/" + msg + "/" + pdfdlname
+
+                    pdfdlstr = '<div><a href="' + pdfdownloadurl + '"<span class="esri-icon-download"></span><span>' + pdfdlname + '</span></a></div>'
+                    $(".pdfdl").append(pdfdlstr)
+                    FetchHistory()
+                }).fail(function (xhr, status, error) {
+                    pdfdlstr = '<div><a <span class="esri-icon-download"></span><span>ERROR</span></a></div>'
+                });
+        } else if (reportType == "history") {
+            // apigeometry.title = pdfbasename;
+            // apigeometry.rings = window.histgeom.rings
+            //    console.log("a")
+            window.apigeometry.history = true
+            //    console.log(JSON.stringify(window.apigeometry))
+
+            $.ajax({
+                method: "POST",
+                url: "/postgeom",
+                data: JSON.stringify(window.apigeometry),
+            })
+                .done(function (msg) {
+                    console.log(msg);
+                    $("#pdfspinner").hide();
+
+                    pdfdownloadurl = "/getreport/" + msg + "/" + pdfdlname
+
+                    pdfdlstr = '<div><a href="' + pdfdownloadurl + '"<span class="esri-icon-download"></span><span>' + pdfdlname + '</span></a></div>'
+                    $(".pdfdl").append(pdfdlstr)
+                    FetchHistory()
+                }).fail(function (xhr, status, error) {
+                    pdfdlstr = '<div><a <span class="esri-icon-download"></span><span>ERROR</span></a></div>'
+                });
+        } else if (reportType == "choose") {
+            // apigeometry.title = pdfbasename;
+            // apigeometry.rings = window.histgeom.rings
+            //  console.log("choose")
+            window.apigeometry.history = false
+            //  console.log(JSON.stringify(window.apigeometry))
+
+            $.ajax({
+                method: "POST",
+                url: "/postgeom",
+                data: JSON.stringify(window.apigeometry),
+            })
+                .done(function (msg) {
+                    //     console.log(msg);
+                    $("#pdfspinner").hide();
+
+                    pdfdownloadurl = "/getreport/" + msg + "/" + pdfdlname
+
+                    pdfdlstr = '<div><a href="' + pdfdownloadurl + '"<span class="esri-icon-download"></span><span>' + pdfdlname + '</span></a></div>'
+                    $(".pdfdl").append(pdfdlstr)
+                    FetchHistory()
+                }).fail(function (xhr, status, error) {
+                    pdfdlstr = '<div><a <span class="esri-icon-download"></span><span>ERROR</span></a></div>'
+                });
+        } else {
+            var myFormData = new FormData();
+            myFormData.append('file', document.getElementById('shape').files[0]);
+            myFormData.append('title', pdfbasename);
+            myFormData.append('action', "clip");
+            $.ajax({
+                url: '/reportupload',
+                type: 'POST',
+                processData: false, // important
+                contentType: false, // important
+                // dataType : 'json',
+                data: myFormData
+            }).done(function (msg) {
+                //    console.log("asdf")
+                //    console.log(msg);
                 $("#pdfspinner").hide();
 
                 pdfdownloadurl = "/getreport/" + msg + "/" + pdfdlname
 
                 pdfdlstr = '<div><a href="' + pdfdownloadurl + '"<span class="esri-icon-download"></span><span>' + pdfdlname + '</span></a></div>'
                 $(".pdfdl").append(pdfdlstr)
-
+                FetchHistory()
+            }).fail(function (xhr, status, error) {
+                //   console.log(xhr);
+                //   console.log(status)
+                //  console.log(error)
             });
-
+            //    console.log("lol")
+            //    //reportupload
+            //    $("#pdfspinner").hide();
+        }
 
     })
 
@@ -410,12 +743,15 @@ require([
         }
     }
 
+
+
+
     function toptoolbar(buttonclicked) {
-        console.log(buttonclicked)
+        //  console.log(buttonclicked)
         clearTheseButtons = topbuttonlist.filter(function (bc) {
             return bc != buttonclicked;
         });
-        console.log(clearTheseButtons)
+        //   console.log(clearTheseButtons)
         clearTheseButtons.forEach(function (element) {
             $(element).removeClass('active');
             $(element).blur();
@@ -424,23 +760,29 @@ require([
             $(buttonclicked).toggleClass('active');
             $(buttonclicked).blur();
             if (buttonclicked == "#PrintBtn") {
+                $("#viewDiv").css('cursor', 'default');
                 view.ui.remove(print, "top-right");
             } else if (buttonclicked == "#ReportButton") {
+                $("#viewDiv").css('cursor', 'default');
                 $("#reportbox").hide();
+                view.graphics.removeAll();
             } else if (buttonclicked == "#InfoBtn") {
                 clickEnabled = "risk"
+                $("#viewDiv").css('cursor', 'default');
             } else if (buttonclicked == "#MeasureButton") {
                 clickEnabled = "risk"
+                $("#viewDiv").css('cursor', 'default');
                 view.graphics.removeAll();
 
                 $("#measurebox").hide();
             }
 
-            console.log("active so deacivating")
+            //  console.log("active so deacivating")
         } else {
             $(buttonclicked).toggleClass('active');
-            console.log("activating")
+            //  console.log("activating")
             if (buttonclicked == "#PrintBtn") {
+                $("#viewDiv").css('cursor', 'default');
                 view.ui.add(print, "top-right");
                 clickEnabled = "risk"
 
@@ -448,22 +790,36 @@ require([
                 view.ui.remove(print, "top-right");
             }
             if (buttonclicked == "#ReportButton") {
+                $("#viewDiv").css('cursor', 'url(images/polycur.png), auto');
                 $("#reportbox").show();
-                clickEnabled = "report"
+                clickEnabled = "report" //HB
                 view.graphics.removeAll();
                 action = draw.create("polygon");
+
+                reportType = "draw"
+
+
+                view.graphics.removeAll();
+                action = draw.create("polygon");
+                $("#upload").prop('checked', false);
+
+
+
+
             } else {
                 $("#reportbox").hide();
             }
             if (buttonclicked == "#InfoBtn") {
                 clickEnabled = "info"
-                console.log("cursor")
+                //   console.log("cursor")
+                // $("#viewDiv").css('cursor', 'context-menu');
                 $("#viewDiv").css('cursor', 'url(images/infocur.png), auto');
                 // $("#viewDiv").css('cursor', 'crosshair');
                 view.graphics.removeAll();
 
             }
             if (buttonclicked == "#MeasureButton") {
+                $("#viewDiv").css('cursor', 'url(images/measurecur.png), auto');
                 $("#measurebox").show();
                 action = draw.create("polyline");
                 clickEnabled = "measure"
@@ -574,28 +930,47 @@ require([
     defaultSource.searchExtent = extent;
     searchWidget.container = "searchwidge"
 
+    var measureGeom = {}
+    //var measureUnit=""
+    $("#unitchoice").change(function () {
+        if (jQuery.isEmptyObject(measureGeom) === false) {
+            //  console.log(measureGeom)
+            unitchoice = $("#unitchoice").val();
+            ll = geometryEngine.geodesicLength(measureGeom, unitchoice);
+            //  console.log(ll)
+            $('#measureresult').text(ll.toFixed(2).toString() + " " + unitchoice);
+        }
+    });
+    $("#choosechoice").change(function () {
+        
+            //  console.log($("#choosechoice").val())
+             if ($("#choosechoice").val()=="cityboundaries"){
+                console.log("change to city boundaries")
+                ReflayerObject[0].visible = false
+                ReflayerObject[3].visible = true
+                window.activereflayersRev=[2]
+                // activereflayers.push(activereflayersKey[2])
+                RefLyr.sublayers = ReflayerObject
+             }else if ($("#choosechoice").val()=="counties"){
+                console.log("change to counties")
+                window.activereflayersRev=[5]
+                ReflayerObject[0].visible = true
+                ReflayerObject[3].visible = false
+                RefLyr.sublayers = ReflayerObject
+             }
 
+
+    });
+    
 
     //   ________     __  
     //  / ___/ (_)___/ /__
     // / /__/ / / __/  '_/
     // \___/_/_/\__/_/\_\ 
 
-    var measureGeom = {}
-    //var measureUnit=""
-    $("#unitchoice").change(function () {
-        if (jQuery.isEmptyObject(measureGeom) === false) {
-            console.log(measureGeom)
-            unitchoice = $("#unitchoice").val();
-            ll = geometryEngine.geodesicLength(measureGeom, unitchoice);
-            console.log(ll)
-            $('#measureresult').text(ll.toFixed(2).toString() + " " + unitchoice);
-        }
-    });
-
-
+    
     view.on("click", function (evt) {
-        console.log(clickEnabled)
+        //   console.log(clickEnabled)
         if (clickEnabled === "report") {
 
             action.on("vertex-add", function (evt) {
@@ -634,16 +1009,87 @@ require([
                 });
 
                 apigeometry = { "rings": [vertices] }
-                console.log(apigeometry)
+                //   console.log(apigeometry)
                 reporturl = 'https://edacarc.unm.edu/arcgis/rest/services/NMWRAP/NMWRAP/MapServer/identify?geometry='
                 reporturl = reporturl + JSON.stringify(apigeometry) + '&geometryType=esriGeometryPolygon&sr=102100&layerDefslayer=&time=&layerTimeOptions=&tolerance=0&mapExtent=-12282336.546622703,3646597.8836240033,-11498398.384530144,4491685.668344687&imageDisplay=1855,856,96&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&dynamicLayers=&returnZ=false&returnM=false&gdbVersion=&f=pjson&layers=all'
 
                 view.graphics.add(graphic);
             }
         }
+        if (clickEnabled === "choose") {
+            //fart
+            view.graphics.removeAll();
+            var clicklat = evt.mapPoint.latitude.toFixed(2);
+            var clicklon = evt.mapPoint.longitude.toFixed(2);
+            var point = view.toMap({
+                x: evt.x,
+                y: evt.y
+            });
+            // var activereflayersRev = [5]
+            identifyTask = new IdentifyTask(NMWRAPurl);
+            infoparams = new IdentifyParameters();
+            infoparams.tolerance = 0;
+            infoparams.layerIds = window.activereflayersRev.reverse() //[0, 1, 2, 3, 4, 5];
+            infoparams.layerOption = "top";
+            infoparams.width = view.width;
+            infoparams.height = view.height;
+            infoparams.returnGeometry = true
+
+            infoparams.geometry = point
+            infoparams.mapExtent = view.extent;
+            // params.layerIds = [5, 4, 3, 2, 1, 0];
+            //  console.log(infoparams)
+
+            identifyTask.execute(infoparams).then(function (response) {
+                //   console.log(response)
+                var results = response.results;
+                // console.log(results)
+                return arrayUtils.map(results, function (result) {
+                    // console.log(result)
+                    var feature = result.feature
+                    if (window.activereflayersRev==[5]){
+                    var featureName = feature.attributes.NAME
+                    }else if (window.activereflayersRev=[2]){
+                        var featureName = feature.attributes.NAME10 
+                    }
+                    // window.apigeometry.history = false
+                    //window.apigeometry.title = "test"
+                    // window.apigeometry.rings = countyGeom.rings
+
+                    $("#reportname").val(featureName);
+                    var countyGeom = feature.geometry
+                    var graphic = new Graphic({
+                        geometry: new Polygon({
+                            hasZ: true,
+                            rings: countyGeom.rings,//item['geom']['rings'][0],
+                            spatialReference: view.spatialReference
+                        }),
+                        symbol: {
+                            type: "simple-fill",
+                            color: [227, 139, 79, 0.5]
+                        }
+
+                    });
+
+                    //   var polygonGraphic = new Graphic({
+                    //     geometry: polygon,
+                    //     symbol: fillSymbol
+                    //   });
+                    // console.log("a1")
+                    // console.log(window.apigeometry)
+                    view.graphics.add(graphic)
+                    window.apigeometry.history = false
+                    window.apigeometry.title = featureName
+                    window.apigeometry.rings = countyGeom.rings
+                    document.getElementById("GenReport").disabled = false
+                    //    console.log("b")
+                    //    console.log(window.apigeometry)
+                });
+            });
+        }
         if (clickEnabled === "measure") {
             unitchoice = $("#unitchoice").val();
-            console.log(unitchoice)
+            //  console.log(unitchoice)
             // create an instance of draw polyline action
 
 
@@ -697,11 +1143,11 @@ require([
 
                 lineLength = geometryEngine.geodesicLength(graphic.geometry, unitchoice);
 
-                console.log(typeof graphic.geometry)
+                //    console.log(typeof graphic.geometry)
                 measureGeom = graphic.geometry
                 measureUnit = unitchoice
-                console.log(typeof unitchoice)
-                console.log(unitchoice)
+                //    console.log(typeof unitchoice)
+                //   console.log(unitchoice)
                 $('#measureresult').text(lineLength.toFixed(2).toString() + " " + unitchoice);
 
             }
@@ -727,18 +1173,18 @@ require([
             infoparams.geometry = point
             infoparams.mapExtent = view.extent;
             // params.layerIds = [5, 4, 3, 2, 1, 0];
-            console.log(infoparams)
+            //    console.log(infoparams)
 
             identifyTask.execute(infoparams).then(function (response) {
-                console.log(response)
+                //     console.log(response)
                 var results = response.results;
-                console.log(results)
+                //    console.log(results)
                 return arrayUtils.map(results, function (result) {
-                    console.log(result)
+                    //      console.log(result)
                     var feature = result.feature;
 
                     var layerName = result.layerName;
-                    console.log(feature)
+                    //     console.log(feature)
                     feature.attributes.layerName = layerName;
                     if (layerName === 'County') {
                         feature.popupTemplate = { // autocasts as new PopupTemplate()
@@ -804,6 +1250,10 @@ require([
                     });
                 }
                 dom.byId("viewDiv").style.cursor = "auto";
+                if (clickEnabled === "info") {
+                    // $("#viewDiv").css('cursor', 'context-menu');
+                    $("#viewDiv").css('cursor', 'url(images/infocur.png), auto');
+                }
             }
         }
 
@@ -946,15 +1396,22 @@ function checkPasswordMatch() {
         $("#divCheckPasswordMatch").html("Passwords do not match!");
         $("#divCheckPasswordMatch").addClass("changepassword-diabled");
         $("#divCheckPasswordMatch").removeClass("changepassword");
-        window.canChangePass=false
+        window.canChangePass = false
     } else {
         $("#divCheckPasswordMatch").html("Change Password");
         $("#divCheckPasswordMatch").addClass("changepassword");
         $("#divCheckPasswordMatch").removeClass("changepassword-diabled");
-        window.canChangePass=true
+        window.canChangePass = true
     }
 }
+
 $(document).ready(function () {
+    // $('.historyitem').on("click",function(){
+    //     console.log(called)
+    //     var histid =  $(this).data("id");
+    //     console.log(histid)
+    // })
+
 
     $("#txtNewPassword, #txtConfirmPassword").keyup(checkPasswordMatch);
 
@@ -965,56 +1422,60 @@ $(document).ready(function () {
 
     })
         .done(function (data, status, xhr) {
-            console.log("$$$")
-            console.log(xhr.getResponseHeader('Set-Cookie'));
+            //   console.log("$$$")
+            //   console.log(xhr.getResponseHeader('Set-Cookie'));
             window.LoggedIn = true
-            console.log("loggedint?")
-            console.log(window.LoggedIn)
+            //   console.log("loggedint?")
+            //   console.log(window.LoggedIn)
             $("#loginbutt").hide();
 
             $("#ReportButton").show();
             $("#logoutButton").show();
             var admin = getUrlParameter('admin');
-            console.log(admin)
-            console.log(window.LoggedIn)
+            //   console.log(admin)
+            //   console.log(window.LoggedIn)
             if (admin == "true" && window.LoggedIn) { //Need to check for admin!!!
-                console.log(admin)
+                //       console.log(admin)
                 $("#applicationDiv").hide();
                 $("#AdminDiv").show();
             } else {
                 $("#applicationDiv").show();
                 $("#AdminDiv").hide();
             }
+
+
+            FetchHistory()
+
         }).fail(function (msg) {
             // PWResetDiv,PWResetFailDiv
             var token = getUrlParameter('token');
-            if (token != undefined){
-            if (token.length == 200) {
-                console.log("lol")
-                $("#applicationDiv").hide();
-                $("#AdminDiv").hide();
-                $.ajax({
-                    method: "POST",
-                    url: "/checkreset",
-                    data: token,
-                })
-                    .done(function (msg) {
-                        console.log(msg)
-                        if (msg.trim()=="True"){
-                        $("#PWResetDiv").show();
-                        }else{
+            if (token != undefined) {
+                if (token.length == 200) {
+                    //       console.log("lol")
+                    $("#applicationDiv").hide();
+                    $("#AdminDiv").hide();
+                    $.ajax({
+                        method: "POST",
+                        url: "/checkreset",
+                        data: token,
+                    })
+                        .done(function (msg) {
+                            //           console.log(msg)
+                            if (msg.trim() == "True") {
+                                $("#PWResetDiv").show();
+                            } else {
+                                //              console.log(msg)
+                                //            console.log("True")
+                                $("#PWResetFailDiv").show();
+
+                            }
+                        }).fail(function (msg) {
                             console.log(msg)
-                            console.log("True")
-                            $("#PWResetFailDiv").show();
-                           
-                        }
-                    }).fail(function (msg) {
-                        console.log(msg)
-                });
-            }    
+                        });
+                }
             } else {
-                console.log("##")
-                console.log(msg);
+                //  console.log("##")
+                //  console.log(msg);
                 $("#applicationDiv").show();
                 $("#AdminDiv").hide();
                 $("#logoutButton").hide();
@@ -1023,11 +1484,11 @@ $(document).ready(function () {
                 window.LoggedIn = false
             }
         });
-    console.log(window.LoggedIn)
+    // console.log(window.LoggedIn)
 
 
 
-    console.log("VVVV")
+    // console.log("VVVV")
     if (/*@cc_on!@*/false || !!document.documentMode) {
         // if ($.browser.msie && $.browser.version > 6){
 
@@ -1045,7 +1506,7 @@ $(document).ready(function () {
     }
 
     $("#pwreset").click(function () {
-        console.log("test");
+        //   console.log("test");
         $('#myModal').modal('hide')
         $('#pwresetModal').modal('show')
 
@@ -1053,23 +1514,23 @@ $(document).ready(function () {
 
 
     $("#divCheckPasswordMatch").click(function () {
-        if (canChangePass==true){
-        var password=$("#txtConfirmPassword").val();
-        var usertoken = getUrlParameter('token');
-        passpack = { "token": usertoken,"password":password}
-        console.log(JSON.stringify(passpack))
+        if (canChangePass == true) {
+            var password = $("#txtConfirmPassword").val();
+            var usertoken = getUrlParameter('token');
+            passpack = { "token": usertoken, "password": password }
+            //   console.log(JSON.stringify(passpack))
 
-        $.ajax({
-            method: "POST",
-            url: "/changepassword",
-            data: JSON.stringify(passpack),
-        })
-            .done(function (msg) {
-                console.log(msg)
-                window.location.href = "https://nmwrap.org"
-            }).fail(function (msg) {
-                console.log(msg)
-            });
+            $.ajax({
+                method: "POST",
+                url: "/changepassword",
+                data: JSON.stringify(passpack),
+            })
+                .done(function (msg) {
+                    //     console.log(msg)
+                    window.location.href = "https://nmwrap.org"
+                }).fail(function (msg) {
+                    //       console.log(msg)
+                });
 
 
         }
@@ -1078,28 +1539,35 @@ $(document).ready(function () {
 
     $("#reqreset").click(function () {
         //resetEmail
-        console.log($("#resetEmail").val());
+        //  console.log($("#resetEmail").val());
+        $("#reqreset").hide()
+        $("#pwrspinner").show()
+        //<button id="reqreset" class="btn btn-primary">Request Password Reset</button>
         $.ajax({
             method: "POST",
             url: "/resetpassword",
             data: $("#resetEmail").val(),
         })
             .done(function (msg) {
-                console.log(msg)
+                //     console.log(msg)
                 $('#myModal').modal('hide')
                 $('#pwresetModal').modal('hide')
+                $("#reqreset").show()
+                $("#pwrspinner").hide()
             }).fail(function (msg) {
-                console.log(msg)
+                //      console.log(msg)
                 $('#UserDoesNotExist').show()
+                $("#reqreset").show()
+                $("#pwrspinner").hide()
             });
-        console.log($("Done").val());
+        // console.log($("Done").val());
     })
 
 
 
     $("#createuserbutton").click(function () {
-        console.log($("#newname").val());
-        console.log($("#newemail").val());
+        //  console.log($("#newname").val());
+        //  console.log($("#newemail").val());
         userpack = { "email": $("#newemail").val(), "name": $("#newname").val() }
         $.ajax({
             method: "POST",
@@ -1107,32 +1575,33 @@ $(document).ready(function () {
             data: JSON.stringify(userpack),
         })
             .done(function (msg) {
-                console.log(msg)
+                //       console.log(msg)
 
             }).fail(function (msg) {
-                console.log(msg)
+                //        console.log(msg)
             });
     });
     $("#loginbuttona").click(function () {
         authpack = { "email": $("#FormEmail").val(), "password": $("#FormPassword").val() }
-        console.log(authpack);
-        console.log($("#FormPassword").val());
+        //   console.log(authpack);
+        //  console.log($("#FormPassword").val());
         $.ajax({
             method: "POST",
             url: "/login",
             data: JSON.stringify(authpack),
         })
             .done(function (msg) {
-                console.log(msg);
+                //         console.log(msg);
                 $('#myModal').modal('hide')
                 $("#ReportButton").show();
                 $("#loginbutt").hide();
                 $("#logoutButton").show();
                 $("#FailedLogin").hide();
+                FetchHistory()
                 //modify css stuff when logged in...
 
             }).fail(function (msg) {
-                console.log(msg);
+                //          console.log(msg);
                 $("#ddm").addClass("show");
                 $("#FailedLogin").show();
                 window.LoggedIn = false
@@ -1148,7 +1617,7 @@ $(document).ready(function () {
 
         })
             .done(function (msg) {
-                console.log(msg);
+                //         console.log(msg);
                 $("#ReportButton").hide();
                 $("#loginbutt").show();
                 $("#logoutButton").hide();
@@ -1194,7 +1663,7 @@ $(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip()
     $('.riskblurb').text(defaultblurb);
     $(".infopop").mouseover(function (val) {
-        console.log(val.target.id)
+        //    console.log(val.target.id)
         if (val.target.id == "info13") {
 
             opt = {
