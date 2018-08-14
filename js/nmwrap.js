@@ -47,11 +47,7 @@ function FetchHistory() {
     })
         .done(function (msg) {
             UserHistory = msg
-            // $("#histlist").empty()
-            // jQuery.each(window.UserHistory, function (val) {
-            //     hisstr = '<a   data-id="' + this.id + '" class="historyitem list-group-item list-group-item-action">' + this.title + '<button value="' + this.id + '" class="deletehist"><span>X</span></button></a>'
-            //     $("#histlist").append(hisstr)
-            // });
+
 
         }).fail(function (msg) {
             UserHistory = {}
@@ -303,6 +299,17 @@ require([
     $("#shape").change(function () {
         document.getElementById("GenReport").disabled = false
     });
+    $('#ClearPolygon').on('click', function () {
+        clickEnabled = "report" //HB
+        view.graphics.removeAll();
+        action = draw.create("polygon");
+        console.log("clearit")
+        $("#draw").prop('checked', true);
+        $("#upload").prop('checked', false);
+        $("#history").prop('checked', false);
+        $("#choose").prop('checked', false);
+    });
+
     reportType = ""
     $(".ReportRadio").change(function () {
         switch ($(this).val()) {
@@ -314,7 +321,7 @@ require([
                 // console.log("Draw is enabled...");
                 clickEnabled = "report" //HB
                 view.graphics.removeAll();
-                action = draw.create("polygon");
+                action = draw.create("polygon", {mode: "hybrid"});
                 $("#upload").prop('checked', false);
                 $("#history").prop('checked', false);
                 $("#choose").prop('checked', false);
@@ -362,15 +369,42 @@ require([
                 // $("#shape").fadeIn();
 
                 view.graphics.removeAll();
-                jQuery.each(window.UserHistory, function (val) {
-                    hisstr = '<a   data-id="' + this.id + '" class="historyitem list-group-item list-group-item-action">' + this.title + '<button value="' + this.id + '" class="deletehist"><span>X</span></button></a>'
-                    $("#histlist").append(hisstr)
-                });
+                console.log(UserHistory.length)
+                if (UserHistory.length == 0) {
+                    $("#histlist").append("No history found.")
+                } else {
+                    jQuery.each(window.UserHistory, function (val) {
+                        hisstr = '<a   data-id="' + this.id + '" class="historyitem list-group-item list-group-item-action">' + this.title + '<button value="' + this.id + '" class="deletehist"><span>X</span></button></a>'
+                        $("#histlist").append(hisstr)
+                    });
+                }
                 //               pdfdlstr = '<div><a href="' + pdfdownloadurl + '"<span class="esri-icon-download"></span><span>' + pdfdlname + '</span></a></div>'
                 //                $(".pdfdl").append(pdfdlstr)
 
                 break;
             case 'choose':
+
+
+
+                reportType = "draw"
+
+                clickEnabled = "report" //HB
+                view.graphics.removeAll();
+                action = draw.create("polygon");
+
+
+
+
+
+
+
+
+
+
+
+
+                view.graphics.removeAll();
+
                 $("#viewDiv").css('cursor', 'url(images/polycur.png), auto');
                 reportType = "choose"
                 document.getElementById("GenReport").disabled = true;
@@ -382,6 +416,7 @@ require([
                 $("#shape").wrap('<form>').closest('form').get(0).reset();
                 $("#shape").unwrap();
                 clickEnabled = "choose"
+
 
                 // console.log("Show upload form and disable draw stuff...");
                 // clickEnabled = "risk"
@@ -508,16 +543,16 @@ require([
                 }
             }
 
-        }else {
+        } else {
             console.log(evt.currentTarget.dataset.id)
             jQuery.each(window.UserHistory, function (val) {
                 //   console.log(this.id)
                 //   console.log(this.title)
                 console.log(val)
                 console.log(this)//df
-                if (this.id==evt.currentTarget.dataset.id){
-                   // window.UserHistory.splice(val, 1)
-                    payload={"id":evt.currentTarget.dataset.id}
+                if (this.id == evt.currentTarget.dataset.id) {
+                    // window.UserHistory.splice(val, 1)
+                    payload = { "id": evt.currentTarget.dataset.id }
                     $.ajax({
                         method: "POST",
                         url: "/deletehistory",
@@ -531,8 +566,8 @@ require([
                             $("#histlist").append(hisstr)
                         });
                     }).fail(function (msg) {
-                       console.log("failed to delete")
-                       alert(msg)
+                        console.log("failed to delete")
+                        alert(msg)
                     });
 
 
@@ -541,7 +576,7 @@ require([
 
 
                 }
-               // if //fruits.splice(1, 1);
+                // if //fruits.splice(1, 1);
                 // hisstr = '<a   data-id="' + this.id + '" class="historyitem list-group-item list-group-item-action">' + this.title + '<button value="' + this.id + '" class="deletehist"><span>X</span></button></a>'
                 // $("#histlist").append(hisstr)
             });
@@ -762,10 +797,16 @@ require([
             if (buttonclicked == "#PrintBtn") {
                 $("#viewDiv").css('cursor', 'default');
                 view.ui.remove(print, "top-right");
+                clickEnabled = "risk"
             } else if (buttonclicked == "#ReportButton") {
                 $("#viewDiv").css('cursor', 'default');
                 $("#reportbox").hide();
                 view.graphics.removeAll();
+                clickEnabled = "risk"
+                $("#draw").prop('checked', true);
+                $("#upload").prop('checked', false);
+                $("#history").prop('checked', false);
+                $("#choose").prop('checked', false);
             } else if (buttonclicked == "#InfoBtn") {
                 clickEnabled = "risk"
                 $("#viewDiv").css('cursor', 'default');
@@ -796,6 +837,10 @@ require([
                 view.graphics.removeAll();
                 action = draw.create("polygon");
 
+                $("#draw").prop('checked', true);
+                $("#upload").prop('checked', false);
+                $("#history").prop('checked', false);
+                $("#choose").prop('checked', false);
                 reportType = "draw"
 
 
@@ -862,6 +907,8 @@ require([
 
     view.on("pointer-move", pointereventHandler);
     function pointereventHandler(event) {
+
+
         params.geometry = view.toMap({ x: event.x, y: event.y })
         params.mapExtent = view.extent;
         params.layerIds = [activelayer];
@@ -942,55 +989,87 @@ require([
         }
     });
     $("#choosechoice").change(function () {
-        
-            //  console.log($("#choosechoice").val())
-             if ($("#choosechoice").val()=="cityboundaries"){
-                console.log("change to city boundaries")
-                ReflayerObject[0].visible = false
-                ReflayerObject[3].visible = true
-                window.activereflayersRev=[2]
-                // activereflayers.push(activereflayersKey[2])
-                RefLyr.sublayers = ReflayerObject
-             }else if ($("#choosechoice").val()=="counties"){
-                console.log("change to counties")
-                window.activereflayersRev=[5]
-                ReflayerObject[0].visible = true
-                ReflayerObject[3].visible = false
-                RefLyr.sublayers = ReflayerObject
-             }
+
+        //  console.log($("#choosechoice").val())
+        if ($("#choosechoice").val() == "cityboundaries") {
+            console.log("change to city boundaries")
+            ReflayerObject[0].visible = false
+            ReflayerObject[3].visible = true
+            window.activereflayersRev = [2]
+            // activereflayers.push(activereflayersKey[2])
+            RefLyr.sublayers = ReflayerObject
+        } else if ($("#choosechoice").val() == "counties") {
+            console.log("change to counties")
+            window.activereflayersRev = [5]
+            ReflayerObject[0].visible = true
+            ReflayerObject[3].visible = false
+            RefLyr.sublayers = ReflayerObject
+        }
 
 
     });
-    
+
 
     //   ________     __  
     //  / ___/ (_)___/ /__
     // / /__/ / / __/  '_/
     // \___/_/_/\__/_/\_\ 
+    isDragging = false
+    view.on("pointer-up", function (evt) {
+        if (clickEnabled === "report") {
+            isDragging = false
+            console.log("FALSE")
+        }
+    });
 
-    
+    view.on("pointer-down", function (evt) {
+        if (clickEnabled === "report") {
+            console.log("TRUE")
+            isDragging = true
+        }
+    });
+
+
+
+    view.on("pointer-move", function (evt) {
+        
+        if (isDragging == true) {
+         
+            //view.graphics.removeAll();
+
+           console.log(evt)
+
+        }
+
+    });
     view.on("click", function (evt) {
         //   console.log(clickEnabled)
         if (clickEnabled === "report") {
 
+
             action.on("vertex-add", function (evt) {
-                // console.log(evt)
+                console.log("vertadd")
                 MakePoly(evt.vertices);
             });
 
             action.on("cursor-update", function (evt) {
+                console.log("cursor-update")
                 MakePoly(evt.vertices);
+                
             });
 
             action.on("draw-complete", function (evt) {
+                console.log("raw-complete")
                 MakePoly(evt.vertices);
                 document.getElementById("GenReport").disabled = false;
-                action = draw.create("polygon");
+                action = draw.create("polygon",{mode: "hybrid"});
             });
 
             action.on("vertex-remove", function (evt) {
+                console.log("vertex-remove")
                 MakePoly(evt.vertices);
             });
+
 
             function MakePoly(vertices) {
                 view.graphics.removeAll();
@@ -1045,12 +1124,15 @@ require([
                 var results = response.results;
                 // console.log(results)
                 return arrayUtils.map(results, function (result) {
-                    // console.log(result)
+                    console.log(result.feature)
+                    console.log(window.activereflayersRev)
                     var feature = result.feature
-                    if (window.activereflayersRev==[5]){
-                    var featureName = feature.attributes.NAME
-                    }else if (window.activereflayersRev=[2]){
-                        var featureName = feature.attributes.NAME10 
+                    if (feature.attributes.NAME != undefined) {//window.activereflayersRev==[5]){
+                        console.log("5?")
+                        var featureName = feature.attributes.NAME
+                    } else if (feature.attributes.NAME10 != undefined) {//window.activereflayersRev==[2]){
+                        console.log("2?")
+                        var featureName = feature.attributes.NAME10
                     }
                     // window.apigeometry.history = false
                     //window.apigeometry.title = "test"
@@ -1411,7 +1493,10 @@ $(document).ready(function () {
     //     var histid =  $(this).data("id");
     //     console.log(histid)
     // })
-
+    $("#draw").prop('checked', true);
+    $("#upload").prop('checked', false);
+    $("#history").prop('checked', false);
+    $("#choose").prop('checked', false);
 
     $("#txtNewPassword, #txtConfirmPassword").keyup(checkPasswordMatch);
 

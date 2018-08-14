@@ -30,6 +30,25 @@ i.icon {
     float: left;
     
 }
+#ClearPolygon{
+    background-color: white;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #a19a9a;
+    color: #070707;
+    font-size: 7pt;
+}
+
+#choosechoice {
+    width: 100px;
+    background-color: white;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #a19a9a;
+    color: #070707;
+    font-size: 9pt;
+    /* font-size: 8pt; */
+}
 .esri-select-custom{
     width: 70%;
 }
