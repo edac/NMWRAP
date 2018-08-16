@@ -41,6 +41,28 @@
 <body>
 
 
+
+    <div class="modal fade" id="extractModal" tabindex="-1" role="dialog" aria-labelledby="extractModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="extractModalLabel">Data Extract</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div id="ExtractStatus" class="modal-body">
+              
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+
     <div id="AdminDiv" style="display: none">
 
 
@@ -84,6 +106,9 @@
 
 
         <div class="header1 wyrfont" style>
+                <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#extractModal">
+                        Launch demo modal
+                      </button> -->
             <button id="logoutButton" type="button" class="btn btn-info btn-lg loginbutton" style="display: none">Logout</button>
             <button id="loginbutt" type="button" class="btn btn-info btn-lg loginbutton" data-toggle="modal" data-target="#myModal">Login</button>
             <div class="modal fade" id="myModal" role="dialog">
@@ -229,9 +254,10 @@
                         <label class="rad radleft">
                             <input type="radio" class="ReportRadio" id="draw" checked="draw" value="draw">
                             <i class="wyrfont"></i> Draw a polygon
-                            <img tabindex="0" id="infodrawpl" class="infopop" data-toggle="popover" title="Draw a polygon" data-content="This option allow a user to create a polygon on the map to create an area of interest. "
+                            <img tabindex="0" id="infodrawpl" class="infopop" data-toggle="popover" title="Draw a polygon" data-content="This option allows a user to create a polygon on the map to create an area of interest. Click on map to set vertices. Double-click to complete polygon"
                                 src="images/infoicon.svg" height="16" width="16">
-                        </label><button type="button" id="ClearPolygon">Clear Polygon</button>
+                        </label>
+                        <button type="button" id="ClearPolygon">Clear Polygon</button>
                         <br>
                         <label class="rad radleft">
                             <input type="radio" class="ReportRadio" id="upload" value="upload">
@@ -278,8 +304,12 @@
 
                         <!-- <i id="historyspinner" class="fa fa-spinner fa-spin" style="font-size:24px; display:none"></i> -->
                         <br>
+                        
                         <br>
                         <button class="action-generate" id="GenReport" type="button" title="Generate Report" disabled>Generate Report</button>
+                        <br>
+                        <br>
+                        <button class="action-generate" id="GenExtract" type="button" title="Extract Data" disabled>Extract Data</button>
                         <!-- <div style="display:none">Download</div> -->
                         <div class="list-group mylistgroup" id="histlist">
 

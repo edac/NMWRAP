@@ -298,6 +298,7 @@ require([
 
     $("#shape").change(function () {
         document.getElementById("GenReport").disabled = false
+        document.getElementById("GenExtract").disabled = false
     });
     $('#ClearPolygon').on('click', function () {
         clickEnabled = "report" //HB
@@ -316,12 +317,14 @@ require([
             case 'draw':
                 $("#viewDiv").css('cursor', 'url(images/polycur.png), auto');
                 document.getElementById("GenReport").disabled = true;
+                document.getElementById("GenExtract").disabled = true;
                 $("#reportname").prop('disabled', false);
                 reportType = "draw"
                 // console.log("Draw is enabled...");
                 clickEnabled = "report" //HB
                 view.graphics.removeAll();
-                action = draw.create("polygon", {mode: "hybrid"});
+                action = draw.create("polygon", { mode: "hybrid" });
+                
                 $("#upload").prop('checked', false);
                 $("#history").prop('checked', false);
                 $("#choose").prop('checked', false);
@@ -337,6 +340,7 @@ require([
                 $("#viewDiv").css('cursor', 'default');
                 reportType = "upload"
                 document.getElementById("GenReport").disabled = true;
+                document.getElementById("GenExtract").disabled = true;
                 $("#draw").prop('checked', false);
                 $("#history").prop('checked', false);
                 $("#choose").prop('checked', false);
@@ -355,6 +359,7 @@ require([
                 $("#reportname").prop('disabled', true);
                 reportType = "history"
                 document.getElementById("GenReport").disabled = true;
+                document.getElementById("GenExtract").disabled = true;
                 $("#draw").prop('checked', false);
                 $("#upload").prop('checked', false);
                 $("#choose").prop('checked', false);
@@ -408,6 +413,7 @@ require([
                 $("#viewDiv").css('cursor', 'url(images/polycur.png), auto');
                 reportType = "choose"
                 document.getElementById("GenReport").disabled = true;
+                document.getElementById("GenExtract").disabled = true;
                 $("#draw").prop('checked', false);
                 $("#history").prop('checked', false);
                 $("#upload").prop('checked', false);
@@ -539,6 +545,7 @@ require([
                     // console.log(window.apigeometry)
                     // console.log("aa")
                     document.getElementById("GenReport").disabled = false;
+                    document.getElementById("GenExtract").disabled = false;
 
                 }
             }
@@ -588,7 +595,10 @@ require([
     });
     // console.log(draw)
 
-
+    $("#extractModal").on('hidden.bs.modal', function () {
+        console.log("extractmodal")
+        $( "#ExtractStatus" ).empty();
+      })
 
 
     var print = new Print({
@@ -614,6 +624,67 @@ require([
     $("#InfoBtn").click(function () {
         toptoolbar("#InfoBtn")
 
+    })
+
+
+    $("#GenExtract").click(function () {
+        var pdfdlname = $("#reportname").val();
+        if (pdfdlname === "") {
+            pdfdlname = "NMWRAP-Extract"
+        }
+
+
+        pdfbasename = pdfdlname
+
+        if (reportType == "upload") {
+            
+            var myFormData = new FormData();
+            
+            myFormData.append('file', document.getElementById('shape').files[0]);
+            myFormData.append('title', pdfbasename);
+            myFormData.append('action', "clip");
+            $.ajax({
+                url: '/extractfromupload',
+                type: 'POST',
+                processData: false, // important
+                contentType: false, // important
+                // dataType : 'json',
+                data: myFormData
+            }).done(function (msg) {
+                console.log(msg);
+                $("#ExtractStatus").append(msg)
+                $("#extractModal").modal();
+                FetchHistory()
+
+            }).fail(function (msg) {
+                console.log(msg);
+                $("#ExtractStatus").append(msg)
+                $("#extractModal").modal();
+            });
+
+        } else {
+            if (reportType == "history"){
+                window.apigeometry.history = true
+            }
+            apigeometry.title = pdfbasename;
+            $.ajax({
+                method: "POST",
+                url: "/postgeomforextract",
+                data: JSON.stringify(apigeometry),
+            })
+                .done(function (msg) {
+                    // ExtractStatus
+                    console.log(msg);
+                    $("#ExtractStatus").append(msg)
+                    $("#extractModal").modal();
+                    FetchHistory()
+                    // $("#extractModal").data("target").modal("show");
+                }).fail(function (msg) {
+                    console.log(msg);
+                    $("#ExtractStatus").append(msg)
+                    $("#extractModal").modal();
+                });
+        }
     })
     $("#GenReport").click(function () {
         $("#pdfspinner").show();
@@ -783,6 +854,7 @@ require([
 
     function toptoolbar(buttonclicked) {
         //  console.log(buttonclicked)
+        draw.reset()
         clearTheseButtons = topbuttonlist.filter(function (bc) {
             return bc != buttonclicked;
         });
@@ -836,6 +908,7 @@ require([
                 clickEnabled = "report" //HB
                 view.graphics.removeAll();
                 action = draw.create("polygon");
+                
 
                 $("#draw").prop('checked', true);
                 $("#upload").prop('checked', false);
@@ -1032,18 +1105,18 @@ require([
 
 
     view.on("pointer-move", function (evt) {
-        
+
         if (isDragging == true) {
-         
+
             //view.graphics.removeAll();
 
-           console.log(evt)
+            console.log(evt)
 
         }
 
     });
     view.on("click", function (evt) {
-        //   console.log(clickEnabled)
+        console.log(clickEnabled)
         if (clickEnabled === "report") {
 
 
@@ -1055,14 +1128,16 @@ require([
             action.on("cursor-update", function (evt) {
                 console.log("cursor-update")
                 MakePoly(evt.vertices);
-                
+
             });
 
             action.on("draw-complete", function (evt) {
                 console.log("raw-complete")
                 MakePoly(evt.vertices);
                 document.getElementById("GenReport").disabled = false;
-                action = draw.create("polygon",{mode: "hybrid"});
+                document.getElementById("GenExtract").disabled = false;
+                action = draw.create("polygon", { mode: "hybrid" });
+                
             });
 
             action.on("vertex-remove", function (evt) {
@@ -1164,6 +1239,7 @@ require([
                     window.apigeometry.title = featureName
                     window.apigeometry.rings = countyGeom.rings
                     document.getElementById("GenReport").disabled = false
+                    document.getElementById("GenExtract").disabled = false
                     //    console.log("b")
                     //    console.log(window.apigeometry)
                 });
@@ -1192,6 +1268,7 @@ require([
                 measureLine(evt.vertices);
 
                 action = draw.create("polyline");
+                
             });
 
             // fires when a vertex is removed
