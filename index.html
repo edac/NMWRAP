@@ -61,23 +61,23 @@ l9Qtc7Vx64rXBXdIAZIPbItbNyWIRTdG0oYAqki3Ry13Yzu"
 
     <div class="modal fade" id="extractModal" tabindex="-1" role="dialog" aria-labelledby="extractModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="extractModalLabel">Data Extract</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="extractModalLabel">Data Extract</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="ExtractStatus" class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                </div>
             </div>
-            <div id="ExtractStatus" class="modal-body">
-              
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              
-            </div>
-          </div>
         </div>
-      </div>
+    </div>
 
 
     <div id="AdminDiv" style="display: none">
@@ -94,7 +94,6 @@ l9Qtc7Vx64rXBXdIAZIPbItbNyWIRTdG0oYAqki3Ry13Yzu"
                 <input type="text" class="form-control" id="newname" placeholder="Enter Users Name">
             </div>
 
-            <!-- <button id="createuserbutton" class="btn btn-primary">Submit</button> -->
             <a class="button" style="border: solid; border-radius: 11px; padding: 7px;" id="createuserbutton">Create</a>
         </form>
     </div>
@@ -110,8 +109,6 @@ l9Qtc7Vx64rXBXdIAZIPbItbNyWIRTdG0oYAqki3Ry13Yzu"
                 <label for="txtConfirmPassword">Password</label>
                 <input type="password" class="form-control" id="txtConfirmPassword" placeholder="Password">
             </div>
-            <!-- <div class="registrationFormAlert" id="divCheckPasswordMatch"></div> -->
-            <!-- <button id="createuserbutton" class="btn btn-primary">Submit</button> -->
             <a class="button registrationFormAlert changepassword-diabled" id="divCheckPasswordMatch">Create</a>
         </form>
     </div>
@@ -123,9 +120,7 @@ l9Qtc7Vx64rXBXdIAZIPbItbNyWIRTdG0oYAqki3Ry13Yzu"
 
 
         <div class="header1 wyrfont" style>
-                <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#extractModal">
-                        Launch demo modal
-                      </button> -->
+
             <button id="logoutButton" type="button" class="btn btn-info btn-lg loginbutton" style="display: none">Logout</button>
             <button id="loginbutt" type="button" class="btn btn-info btn-lg loginbutton" data-toggle="modal" data-target="#myModal">Login</button>
             <div class="modal fade" id="myModal" role="dialog">
@@ -192,31 +187,7 @@ l9Qtc7Vx64rXBXdIAZIPbItbNyWIRTdG0oYAqki3Ry13Yzu"
             </div>
 
 
-            <!-- <div class="dropdown" id="loginbutt">
-                        <button  style="position: absolute;right: 5px;top: 5px;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          Login
-                        </button>
-                        <div class="dropdown-menu" id="ddm">
-                                
-                                  <div class="form-group">
-                                    <label for="FormEmail1">Email address</label>
-                                    <input type="email" class="form-control" id="FormEmail" placeholder="email@example.com">
-                                  </div>
-                                  <div class="form-group">
-                                    <label for="FormPassword">Password</label>
-                                    <input type="password" class="form-control" id="FormPassword" placeholder="Password">
-                                  </div>
 
-                                  <button  id="loginbuttona" class="btn btn-primary">Sign in</button>
-                                
-                                <div  id="FailedLogin" style="color: red;display:none">Login Failed.</div>
-                              </div>
-
-                      </div>
-
-                      <button  style="position: absolute;right: 5px;top: 5px; display:none;" class="btn btn-secondart" type="button" id="logoutButton">
-                            Logout
-                          </button> -->
 
             <img src="images/ziafire.png" alt="zia" height="50" width="50" /> NMWRAP
 
@@ -226,8 +197,6 @@ l9Qtc7Vx64rXBXdIAZIPbItbNyWIRTdG0oYAqki3Ry13Yzu"
 
         </div>
         <div class="header2" class="esri-widget">
-            <!-- <button type="button" class="btn btn-secondary">
-                <span class="fas fa-home"></span> Home</button> -->
             <button id="riskbutton" type="button" class="btn btn-secondary">
                 <span class="fab fa-gripfire"></span> Your Risk</button>
             <button id="layersbutton" type="button" class="btn btn-secondary">
@@ -237,12 +206,9 @@ l9Qtc7Vx64rXBXdIAZIPbItbNyWIRTdG0oYAqki3Ry13Yzu"
         </div>
         <div id="viewDiv">
             <div id="topbar">
-                <!-- <button class="action-button esri-icon-blank-map-pin" id="pointButton" type="button"
-                          title="Draw point"></button>-->
                 <button class="action-buttonx esri-icon-chart" id="ReportButton" style="display: none" type="button" title="Generate Report"></button>
                 <button class="action-buttonx esri-icon-description" id="InfoBtn" type="button" title="Info"></button>
                 <button class="action-buttonx esri-icon-polyline" id="MeasureButton" type="button" title="Measure"></button>
-
                 <button class="action-buttonx esri-icon-printer" id="PrintBtn" type="button" title="Print"></button>
             </div>
 
@@ -266,7 +232,6 @@ l9Qtc7Vx64rXBXdIAZIPbItbNyWIRTdG0oYAqki3Ry13Yzu"
 
             <div id="reportbox" style="display: none">
                 <div class="card bg-light mb-3" style="max-width: 18rem;">
-                    <!-- <div class="card-header">Generate Report</div> -->
                     <div class="card-body reportboxbody">
                         <label class="rad radleft">
                             <input type="radio" class="ReportRadio" id="draw" checked="draw" value="draw">
@@ -284,69 +249,50 @@ l9Qtc7Vx64rXBXdIAZIPbItbNyWIRTdG0oYAqki3Ry13Yzu"
                         </label>
                         <br>
                         <label class="rad radleft">
-                                <input type="radio" class="ReportRadio" id="history" value="history">
+                            <input type="radio" class="ReportRadio" id="history" value="history">
                             <i class="wyrfont"></i> Choose from your history
                             <img tabindex="0" id="infohistory" class="infopop" data-toggle="popover" title="Your Previous History" data-content="You can re-use your previous areas of interest"
                                 src="images/infoicon.svg" height="16" width="16">
                         </label>
                         <br>
                         <label class="rad radleft">
-                                <input type="radio" class="ReportRadio" id="choose" value="choose">
-                            <i class="wyrfont"></i> Choose 
+                            <input type="radio" class="ReportRadio" id="choose" value="choose">
+                            <i class="wyrfont"></i> Choose
                             <select id="choosechoice">
-                                    <option value="counties">Counties</option>
-                                    <option value="cityboundaries">City Boundaries</option>
+                                <option value="counties">Counties</option>
+                                <option value="cityboundaries">City Boundaries</option>
 
-                                </select>
+                            </select>
                             <img tabindex="0" id="infochoose" class="infopop" data-toggle="popover" title="Choose a county" data-content="You can click anywhere on the map to define an area of interest."
                                 src="images/infoicon.svg" height="16" width="16">
                         </label>
                         <br>
                         <br>
                         <br>
-                        <!-- <input type="radio" class="ReportRadio" id="draw" checked="draw" value="draw">Draw -->
-                        <!-- <br><input type="radio" class="ReportRadio" id="upload" value="upload">Upload
-                        <br><input type="radio" class="ReportRadio" id="history" value="history">History
-                        <br><input type="radio" class="ReportRadio" id="choose" value="choose">Choose -->
                         <div style="height:50px">
                             <div>
                                 <input accept=".zip" name="shape" id="shape" type="file" style="display: none" />
                             </div>
                         </div>
-                        <!-- <p class="card-text" id="GenReportText">Click on map to define an area of interest.</p> -->
                         <span id="titlebox">
                             Title
                             <input type="text" id="reportname" placeholder="Title of file">
                         </span>
-
-                        <!-- <i id="historyspinner" class="fa fa-spinner fa-spin" style="font-size:24px; display:none"></i> -->
                         <br>
-                        
+
                         <br>
                         <button class="action-generate" id="GenReport" type="button" title="Generate Report" disabled>Generate Report</button>
                         <br>
                         <br>
                         <button class="action-generate" id="GenExtract" type="button" title="Extract Data" disabled>Extract Data</button>
-                        <!-- <div style="display:none">Download</div> -->
                         <div class="list-group mylistgroup" id="histlist">
 
-                            </div>
+                        </div>
                         <i id="pdfspinner" class="fa fa-spinner fa-spin" style="font-size:24px; display:none"></i>
                         <br>
                         <br>
                         <div class=pdfdl>
-                            <!-- <div>
-                                <a id="pdfdl" href="none">
-                                    <span class="esri-icon-download"></span>
-                                    <span>test.pdf</span>
-                                </a>
-                            </div>
-                            <div>
-                                <a id="pdfdl" href="none">
-                                    <span class="esri-icon-download"></span>
-                                    <span>test.pdf</span>
-                                </a>
-                            </div> -->
+
                         </div>
                     </div>
                 </div>
