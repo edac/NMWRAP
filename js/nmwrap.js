@@ -21,7 +21,7 @@ var polyBuff = {
     },
     color: [111, 111, 111, 0.6]
 };
-
+console.log("ddd")
 //Define the symbol(look) of the center point of the buffer
 var pointBuff = {
     type: "simple-marker",
@@ -1302,6 +1302,7 @@ function checkPasswordMatch() {
 }
 
 $(document).ready(function () {
+    console.log("test")
     $("#draw").prop('checked', true);
     $("#upload").prop('checked', false);
     $("#history").prop('checked', false);
@@ -1316,10 +1317,12 @@ $(document).ready(function () {
 
     })
         .done(function (data, status, xhr) {
+            console.log('loggedin')
             window.LoggedIn = true
             $("#loginbutt").hide();
             $("#ReportButton").show();
             $("#logoutButton").show();
+            $("#GenExtract").show();
             var admin = getUrlParameter('admin');
             if (admin == "true" && window.LoggedIn) { //Need to check for admin!!!
                 $("#applicationDiv").hide();
@@ -1333,9 +1336,12 @@ $(document).ready(function () {
             FetchHistory()
 
         }).fail(function (msg) {
+            console.log('Not logged in')
             var token = getUrlParameter('token');
             if (token != undefined) {
+                console.log('not undefined')
                 if (token.length == 200) {
+                    console.log('Not 200')
                     //       console.log("lol")
                     $("#applicationDiv").hide();
                     $("#AdminDiv").hide();
@@ -1356,11 +1362,17 @@ $(document).ready(function () {
                         });
                 }
             } else {
+                console.log("xxx")
+                $("#GenExtract").hide();
                 $("#applicationDiv").show();
                 $("#AdminDiv").hide();
                 $("#logoutButton").hide();
-                $("#ReportButton").hide();
+                //changed these to disable login for reports
+                //$("#ReportButton").hide();
+                $("#ReportButton").show();
                 $("#loginbutt").show();
+                //$("#loginbutt").hide();
+                
                 window.LoggedIn = false
             }
         });
@@ -1454,6 +1466,8 @@ $(document).ready(function () {
                 $("#loginbutt").hide();
                 $("#logoutButton").show();
                 $("#FailedLogin").hide();
+                
+                $("#GenExtract").show();
                 FetchHistory()
                 //modify css stuff when logged in...
 
@@ -1473,7 +1487,8 @@ $(document).ready(function () {
 
         })
             .done(function (msg) {
-                $("#ReportButton").hide();
+                $("#GenExtract").hide();
+                //$("#ReportButton").hide();
                 $("#loginbutt").show();
                 $("#logoutButton").hide();
 
@@ -1483,10 +1498,16 @@ $(document).ready(function () {
 
     $('.yrinstruct').text("Click on the map to see your risk");
     $("#riskbutton").click(function () {
+        console.log(this)
+        $( "#layersbutton" ).removeClass( "selectedtab" );
+        $( "#riskbutton" ).addClass( "selectedtab" );
         $("#layers").collapse('hide');
         return false;
     });
     $("#layersbutton").click(function () {
+        console.log(this)
+        $( "#layersbutton" ).addClass( "selectedtab" );
+        $( "#riskbutton" ).removeClass( "selectedtab" );
         $("#yourrisk").collapse('hide');
         return false;
     });

@@ -366,10 +366,14 @@ overflow: auto;
     color: white;
 }
 
+.selectedtab{
+    background-color: #3d4347;
+}
+
 #searchwidge {
     position: absolute;
     right: 5px;
-    top: 5px;
+    top: 9px;
 }
 
 #applicationDiv {
