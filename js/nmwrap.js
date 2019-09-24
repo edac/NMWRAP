@@ -6,12 +6,17 @@
 var apigeometry = {}
 var activereflayersRev = [5]
 var NMWRAPurl = "https://edacarc.unm.edu/arcgis/rest/services/NMWRAP/NMWRAP/MapServer"
-var activelayer = "9"
+var NMWRAPRiskurl = "https://edacarc.unm.edu/arcgis/rest/services/NMWRAP/nmwrap_wildfire/MapServer"
+var activelayer = "5"
+var identifies = "risk"
 var activereflayers = [5]
 //becuse I listed them backards...
 var activereflayersKey = [5, 4, 3, 2, 1, 0]
-var defaultblurb = "NMWRAP is Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
-WildfireRiskLayers = [6, 7, 8, 9]
+var defaultblurb ="<div style=\"font-size:16px\" class=\"defaultblurbx\">The New Mexico Wildfire Risk Portal is designed to increase wildfire awareness and provide an overview of wildfire risk in New Mexico. It is a web-mapping tool intended for public use. Utilizing this tool a user can generate maps, download data and reports for a selected area of interest such as counties or watersheds. </div>"
+var blurball ="<div style=\"font-size:13px\" class=\"defaultblurbx\">The homeowner is the most important person in preventing a house from being destroyed by wildfire. It is the actions that a homeowner takes before a wildfire occurs that are critical. These types of actions are called “pre-fire” activities. Pre-fire activities are actions completed before a wildfire occurs which improve the survivability of people and the home. The “winners” will be the people who implement pre-fire activities.</div></br><div class=\"guidetext\">Living with Fire: A Guide for the Homeowner New Mexico:</div><div class=\"guidetext\"><a href=\"http://www.emnrd.state.nm.us/SFD/documents/NMLivingwFireOct.2008.pdf\">English</a>,<a href=\"http://www.emnrd.state.nm.us/SFD/documents/ViviendoConIncendios.pdf\">Spanish</a></div>"
+
+// "NMWRAP is Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+WildfireRiskLayers = [0, 1, 2, 3,4,5]
 var canChangePass = false
 //Define the symbol(look) of the polygon part of the buffer
 var polyBuff = {
@@ -83,26 +88,48 @@ require([
 
 
 
+    // sublayerObject = [{
+    //     id: 6, //At-Risk Watersheds
+    //     visible: false
+    // }, {
+    //     id: 7, //Wildland Urban Interface (WUI)
+    //     visible: false
+    // }, {
+    //     id: 8, //Where People Live
+    //     visible: false
+    // }, {
+    //     id: 9, //Wildfire Potential
+    //     visible: true
+    // }, {
+    //     id: 10, //Land Fire 2014
+    //     visible: false
+    // }, {
+    //     id: 11, // nm_whip_majority.img
+    //     visible: false
+    // }]
+
     sublayerObject = [{
-        id: 6, //At-Risk Watersheds
+        id: 0, //Historic Wildfire Boundaries
         visible: false
     }, {
-        id: 7, //Wildland Urban Interface (WUI)
+        id: 1, //Nature Conservancy At-Risk Watersheds 
         visible: false
     }, {
-        id: 8, //Where People Live
+        id: 2, //Wildland Urban Interface (WUI)
         visible: false
     }, {
-        id: 9, //Wildfire Potential
+        id: 3, //Vegetation
+        visible: false
+    }, {
+        id: 4, //Where People Live
+        visible: false
+    }, {
+        id: 5, // Wildfire Potential
         visible: true
     }, {
-        id: 10, //Land Fire 2014
-        visible: false
-    }, {
-        id: 11, // nm_whip_majority.img
+        id: 6, // nm_whp_majority.img
         visible: false
     }]
-
 
     ReflayerObject = [{
         id: 5, //county
@@ -125,7 +152,7 @@ require([
     }]
 
     var dangerLyr = new MapImageLayer({
-        url: NMWRAPurl,
+        url: NMWRAPRiskurl,
         id: "Danger",
         title: "Risk",
         sublayers: sublayerObject
@@ -222,7 +249,18 @@ require([
 
     $(".LayerSwitcher").click(function () {
         cleartooltips();
+        
         activelayer = this.value
+
+        // if (this.hasClass( "risk" )){
+        //     identifies="risk"
+        // } else if (this.hasClass( "ref" )){
+        //     identifies="ref"
+        // } else if (this.hasClass( "base" )){
+        //     identifies="base"
+        // }
+        
+        // console.log(identifies)
         var index = -1;
         var val = parseInt(this.value)
         var filteredObj = sublayerObject.find(function (item, i) {
@@ -672,6 +710,7 @@ require([
 
 
     function toptoolbar(buttonclicked) {
+        
         draw.reset()
         clearTheseButtons = topbuttonlist.filter(function (bc) {
             return bc != buttonclicked;
@@ -766,13 +805,14 @@ require([
 
     view.ui.add("draw-polygon", "right");
 
-    identifyTask = new IdentifyTask(NMWRAPurl);
+    identifyTask = new IdentifyTask(NMWRAPRiskurl);
     params = new IdentifyParameters();
     params.tolerance = 1;
     params.layerIds = [activelayer];
     params.width = view.width;
     params.height = view.height;
     function cleartooltips() {
+        $('.veggies').tooltip('hide')
         $('.wf').tooltip('hide')
         $('.pop').tooltip('hide')
         $('.wui').tooltip('hide')
@@ -788,6 +828,51 @@ require([
 
 
 
+   // sublayerObject = [{
+    //     id: 6, //At-Risk Watersheds
+    //     visible: false
+    // }, {
+    //     id: 7, //Wildland Urban Interface (WUI)
+    //     visible: false
+    // }, {
+    //     id: 8, //Where People Live
+    //     visible: false
+    // }, {
+    //     id: 9, //Wildfire Potential
+    //     visible: true
+    // }, {
+    //     id: 10, //Land Fire 2014
+    //     visible: false
+    // }, {
+    //     id: 11, // nm_whip_majority.img
+    //     visible: false
+    // }]
+
+    // sublayerObject = [{
+    //     id: 0, //Historic Wildfire Boundaries
+    //     visible: false
+    // }, {
+    //     id: 1, //Nature Conservancy At-Risk Watersheds 
+    //     visible: false
+    // }, {
+    //     id: 2, //Wildland Urban Interface (WUI)
+    //     visible: false
+    // }, {
+    //     id: 3, //Vegetation
+    //     visible: false
+    // }, {
+    //     id: 4, //Where People Live
+    //     visible: false
+    // }, {
+    //     id: 5, // Wildfire Potential
+    //     visible: true
+    // }, {
+    //     id: 6, // nm_whp_majority.img
+    //     visible: false
+    // }]
+
+
+
 
     view.on("pointer-move", pointereventHandler);
     function pointereventHandler(event) {
@@ -797,7 +882,8 @@ require([
         params.mapExtent = view.extent;
         params.layerIds = [activelayer];
         identifyTask.execute(params).then(function (response) {
-            if (activelayer == "9") {
+            // console.log(activelayer)
+            if (activelayer == "5") {
                 //   $('.wfvalue').text(response.results["0"].feature.attributes.CLASS_DESC);
                 cleartooltips();
                 if (response.results["0"].feature.attributes.CLASS_DESC == "6: Non-burnable") {
@@ -822,12 +908,18 @@ require([
                     $('#wf5').tooltip('show')
                     document.getElementById("wf5").style.border = "3px solid LightGray";
 
-                }
-            } else if (activelayer == "8") {
+                }//Shortgrass Prairie
+            } else if (activelayer == "4") {
                 cleartooltips();
                 var popval = "#pop" + response.results["0"].feature.attributes["Class value"]
                 $(popval).tooltip('show')
-            } else if (activelayer == "7") {
+            } else if (activelayer == "3") {
+                cleartooltips();
+                console.log(response.results["0"].feature.attributes["EVT_PHYS"])
+                var vegval = "#" + response.results["0"].feature.attributes["EVT_PHYS"].replace(/\s/g, '');
+                console.log(vegval)
+                $(vegval).tooltip('show')
+            } else if (activelayer == "2") {
                 cleartooltips();
                 if (response.results.length > 0) {
                     var wuival = "#wui" + response.results["0"].feature.attributes.WUIFLAG10
@@ -835,9 +927,9 @@ require([
                 } else {
                     $('#wui0').tooltip('show')
                 }
-            } else if (activelayer == "6") {
+            } else if (activelayer == "1") {
                 cleartooltips();
-                arwvalue = Math.ceil(parseFloat(response.results["0"].feature.attributes.Group_v1)).toString()
+                arwvalue = Math.ceil(parseFloat(response.results["0"].feature.attributes.Ranking)).toString()
                 var arwval = "#arw" + arwvalue
                 $(arwval).tooltip('show')
             }
@@ -1157,6 +1249,7 @@ require([
         }
 
         if (clickEnabled === "risk") {
+            console.log("DDDDDD")
             var clicklat = evt.mapPoint.latitude.toFixed(2);
             var clicklon = evt.mapPoint.longitude.toFixed(2);
             var point = view.toMap({
@@ -1166,7 +1259,7 @@ require([
 
             params.geometry = point
             params.mapExtent = view.extent;
-            params.layerIds = [11]
+            params.layerIds = [6]
             pointLayer.removeAll();
             buffLayer.removeAll();
 
@@ -1176,7 +1269,7 @@ require([
                     $('.yrinstruct').text("Click inside the NM boundary to see risk");
                     $('.yrgeom').text("")
                     $('.yrvalue').text("");
-                    $('.riskblurb').text(defaultblurb);
+                    $('.riskblurb').html(defaultblurb);
                     document.getElementById("riskstatus").style["border-top"] = "1px transparent";
                     document.getElementById("riskstatus").style["border-bottom"] = "1px transparent";
                     document.getElementById("riskstatus").style["background-color"] = "#f8f9fa";
@@ -1185,7 +1278,7 @@ require([
                     $('.yrinstruct').text("Click inside the NM boundary to see risk");
                     $('.yrgeom').text("");
                     $('.yrvalue').text("");
-                    $('.riskblurb').text(defaultblurb);
+                    $('.riskblurb').html(defaultblurb);
                     document.getElementById("riskstatus").style["border-top"] = "1px transparent";
                     document.getElementById("riskstatus").style["border-bottom"] = "1px transparent";
                     document.getElementById("riskstatus").style["background-color"] = "#f8f9fa";
@@ -1196,42 +1289,43 @@ require([
                     var bgcolor;
                     var textcolor;
                     var riskstring
+                    // blurball="What’s Your Risk is derived from the wildfire hazard potential and identifies areas of potential wildfire based estimates of wildfire likelihood and intensity generated in 2016 with the Large Fire Simulation system (FSim), as well as spatial fuels and vegetation data and point locations of fire occurrence from FPA (ca. 1992 – 2013). Information is summarized by ???? pixel .17 mile</br>Minimal Wildfire Risk</br>Very Low Risk</br>Low Risk                    </br>Moderate Risk                    </br>High Risk</br>Very High Risk</br></br>The homeowner is the most important person in preventing a house from being destroyed by wildfire. It is the actions that a homeowner takes before a wildfire occurs that are critical. These types of actions are called “pre-fire” activities. Pre-fire activities are actions completed before a wildfire occurs which improve the survivability of people and the home. The “winners” will be the people who implement pre-fire activities."
                     switch (pixelvalue) {
                         case '1':
                             bgcolor = "green";
                             textcolor = "white";
-                            blurb = "Very Low Risk: Areas with very low risk are Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident."
+                            blurb =blurball// "Very Low Risk.: Areas with very low risk are Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident."
                             riskstring = "Very Low Risk"
                             break;
                         case "2":
 
                             bgcolor = "lightgreen";
                             textcolor = "black";
-                            blurb = "Low Risk: An area with low risk to wildfire is Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident."
+                            blurb = blurball//"Low Risk.: An area with low risk to wildfire is Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident."
                             riskstring = "Low Risk"
                             break;
                         case '3':
                             bgcolor = "#ffff74";
                             textcolor = "black";
-                            blurb = "Moderate Risk: An area with moderate risk is Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.";
+                            blurb =blurball// "Moderate Risk: An area with moderate risk is Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.";
                             riskstring = "Moderate Risk"
                             break;
                         case '4':
                             bgcolor = "#ffa900";
                             textcolor = "black";
-                            blurb = "High Risk: An area with high risk is Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.";
+                            blurb = blurball//"High Risk: An area with high risk is Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.";
                             riskstring = "High Risk"
                             break;
                         case '5':
                             bgcolor = "red";
                             textcolor = "white";
-                            blurb = "Very High Risk: To begin preparing, you should build an emergency kit and make a family communications plan.Design and landscape your home with wildfire safety in mind. Select materials and plants that can help contain fire rather than fuel it.Use fire-resistant or noncombustible materials on the roof and exterior structure of the dwelling, or treat wood or combustible material used in roofs, siding, decking or trim with fire-retardant chemicals."
+                            blurb = blurball//"Very High Risk: To begin preparing, you should build an emergency kit and make a family communications plan.Design and landscape your home with wildfire safety in mind. Select materials and plants that can help contain fire rather than fuel it.Use fire-resistant or noncombustible materials on the roof and exterior structure of the dwelling, or treat wood or combustible material used in roofs, siding, decking or trim with fire-retardant chemicals."
                             riskstring = "Very High Risk"
                             break;
                         case '6':
                             bgcolor = " #a2d9ce";
                             textcolor = "black";
-                            blurb = "Minimal Risk: An area with minimal wildfire risk is Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident."
+                            blurb = blurball//"Minimal Risk: An area with minimal wildfire risk is Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident."
                             riskstring = "Minimal Wildfire Risk"
                             break;
                         case '7':
@@ -1247,7 +1341,7 @@ require([
                     document.getElementById("riskstatus").style["border-color"] = "black";
                     $('.yrvalue').text(riskstring);
                     $('.yrgeom').text(clicklat.toString() + "\u00B0 N " + clicklon.toString() + "\u00B0")//.text(params.geometry.latitude.toString() + "  " + params.geometry.longitude.toString())
-                    $('.riskblurb').text(blurb);
+                    $('.riskblurb').html(blurb);
                     var buffer = geometryEngine.geodesicBuffer(point, .25, "miles");
 
                     buffLayer.add(new Graphic({
@@ -1302,6 +1396,22 @@ function checkPasswordMatch() {
 }
 
 $(document).ready(function () {
+
+
+    var size;
+    var desired_width = 50;
+    var resizer = $("#hidden-resizer");
+    
+    // resizer.html("This is the text I want to resize.");
+    
+    // while(resizer.width() > desired_width) {
+    //   size = parseInt(resizer.css("font-size"), 10);
+    //   resizer.css("font-size", size - 1);
+    // }
+    
+    // $("#target-location").css("font-size", size).html(resizer.html());
+
+
     console.log("test")
     $("#draw").prop('checked', true);
     $("#upload").prop('checked', false);
@@ -1536,7 +1646,7 @@ $(document).ready(function () {
     })
 
     $('[data-toggle="tooltip"]').tooltip()
-    $('.riskblurb').text(defaultblurb);
+    $('.riskblurb').html(defaultblurb);
     $(".infopop").mouseover(function (val) {
         if (val.target.id == "info13") {
 
